@@ -1,6 +1,6 @@
 # Math_Modeling_APMCM
 
-###### v-1.0.0: 搞定了整体的文件见的架构
+###### v-1.0.0: 搞定了整体文件夹的结构
 
 ```text fold:项目文件结构
 APMCM_2025_ProblemC/
@@ -26,4 +26,7 @@ APMCM_2025_ProblemC/
     └── q5_heatmap.html     # 热力图模板
 ```
 
+###### v-1.0.1: 构建开发工具流
+1. 更新之前的`.trae`文件: 删掉了非常细节的内容, 只保留了uv和powershell的使用须知
+1. 采用`uv`初始化了项目, 下载了相关的包, 添加了`.gitignore`
 
