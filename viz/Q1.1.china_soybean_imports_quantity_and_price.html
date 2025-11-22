@@ -46,7 +46,20 @@
         const totalQuantities = data.map((item, i) => item.Argentina + item.Brazil + item.USA);
         const totalCif = data.map((item, i) => item.Argentina_cif + item.Brazil_cif + item.USA_cif);
 
-        const unitPrice = totalCif.map((cif, i) => totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0); // price per ton
+        const unitPrice = totalCif.map((cif, i) => totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0);
+        const argentinaUnitPrice = data.map(item => item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : null);
+        const brazilUnitPrice = data.map(item => item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : null);
+        const usaUnitPrice = data.map(item => item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : null);
+        const weightedAvgUnitPrice = data.map(item => {
+            const tc = item.Argentina_cif + item.Brazil_cif + item.USA_cif;
+            if (tc > 0) {
+                const pA = item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : 0;
+                const pB = item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : 0;
+                const pU = item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : 0;
+                return (pA * item.Argentina_cif + pB * item.Brazil_cif + pU * item.USA_cif) / tc;
+            }
+            return null;
+        });
 
 
 
@@ -69,7 +82,7 @@
                 }
             },
             legend: {
-                data: ['Argentina', 'Brazil', 'USA', 'Unit Price']
+                data: ['Argentina', 'Brazil', 'USA', 'Unit Price', 'Argentina Unit Price', 'Brazil Unit Price', 'USA Unit Price', 'Weighted Avg Unit Price']
             },
             xAxis: [
                 {
@@ -97,14 +110,16 @@
                             }
                             return value;
                         }
-                    }
+                    },
+                    splitLine: { show: true, lineStyle: { type: 'solid' } }
                 },
                 {
                     type: 'value',
                     name: 'Unit Price (USD/ton)',
                     axisLabel: {
                         formatter: '${value}'
-                    }
+                    },
+                    splitLine: { show: true, lineStyle: { type: 'dashed' } }
                 }
             ],
             series: [
@@ -154,6 +169,54 @@
                         }
                     },
                     data: unitPrice
+                },
+                {
+                    name: 'Argentina Unit Price',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    lineStyle: { color: '#73C0DE' },
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
+                        }
+                    },
+                    data: argentinaUnitPrice
+                },
+                {
+                    name: 'Brazil Unit Price',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    lineStyle: { color: '#3BA272' },
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
+                        }
+                    },
+                    data: brazilUnitPrice
+                },
+                {
+                    name: 'USA Unit Price',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    lineStyle: { color: '#FC8452' },
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
+                        }
+                    },
+                    data: usaUnitPrice
+                },
+                {
+                    name: 'Weighted Avg Unit Price',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    lineStyle: { color: '#c23531' },
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
+                        }
+                    },
+                    data: weightedAvgUnitPrice
                 }
             ]
         };
