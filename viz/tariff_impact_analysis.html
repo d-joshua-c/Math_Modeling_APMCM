@@ -15,30 +15,32 @@
 </head>
 <body>
 
-    <div class="chart-box">
-            <div id="indicator-weights-chart" style="width: 50%; height: 500px;"></div>
-        </div>
+    <div class="full-width">Comprehensive Analysis of US Tariff Policy Impact on Soybean Industry</div>
+
     <div class="chart-container">
-        
+        <div class="chart-box">
+            <div class="chart-title">Indicator Weight Comparison (Entropy Weight Method)</div>
+            <div id="indicator-weights-chart" style="width: 90%; height: 500px;"></div>
+        </div>
         <div class="chart-box">
             <div class="chart-title">Pre-Tariff Comprehensive Score</div>
-            <div id="pre-tariff-score-chart" style="width: 50%; height: 300px;"></div>
+            <div id="pre-tariff-score-chart" style="width: 90%; height: 500px;"></div>
         </div>
         <div class="chart-box">
             <div class="chart-title">Post-Tariff Comprehensive Score</div>
-            <div id="post-tariff-score-chart" style="width: 50%; height: 300px;"></div>
+            <div id="post-tariff-score-chart" style="width: 90%; height: 500px;"></div>
         </div>
         <div class="chart-box">
             <div class="chart-title">Market Share Change</div>
-            <div id="market-share-chart" style="width: 50%; height: 300px;"></div>
+            <div id="market-share-chart" style="width: 90%; height: 500px;"></div>
         </div>
         <div class="chart-box">
             <div class="chart-title">Score Change Before and After Tariff Adjustment</div>
-            <div id="score-change-chart" style="width: 50%; height: 300px;"></div>
+            <div id="score-change-chart" style="width: 90%; height: 500px;"></div>
         </div>
         <div class="chart-box">
             <div class="chart-title">Multi-dimensional Indicator Radar Chart</div>
-            <div id="radar-chart" style="width: 50%; height: 400px;"></div>
+            <div id="radar-chart" style="width: 90%; height: 500px;"></div>
         </div>
     </div>
 
@@ -177,8 +179,7 @@
             tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
             xAxis: { type: 'category', data: indicators.map(i => i.replace(/_/g, ' ')) },
             yAxis: { type: 'value', name: 'Weight' },
-            series: [{ name: 'Weight', type: 'bar', data: Object.values(weights) }],
-            toolbar:{}
+            series: [{ name: 'Weight', type: 'bar', data: Object.values(weights) }]
         });
 
         // 2. Pre-Tariff Score Chart
