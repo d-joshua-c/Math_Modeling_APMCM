@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
 </head>
 <body>
-    <div id="main" style="width: 100%;height:600px;"></div>
+    <div id="main" style="width: 50%;height:600px;"></div>
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('main'));
 
@@ -45,9 +45,7 @@
 
         const unitPrice = totalCif.map((cif, i) => totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0); // price per ton
 
-        const argentinaPercentage = argentinaData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
-        const brazilPercentage = brazilData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
-        const usaPercentage = usaData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
+
 
         var option = {
             tooltip: {
@@ -64,7 +62,7 @@
                     dataView: {show: true, readOnly: false},
                     magicType: {show: true, type: ['line', 'bar']},
                     restore: {show: true},
-                    saveAsImage: {show: true}
+                    saveAsImage: {show: true, name: 'china_soybean_imports_quantity_price_2024~2025'}
                 }
             },
             legend: {
@@ -82,11 +80,20 @@
             yAxis: [
                 {
                     type: 'value',
-                    name: 'Import Percentage',
-                    min: 0,
-                    max: 100,
+                    name: 'Import Quantity (kg)',
                     axisLabel: {
-                        formatter: '{value} %'
+                        formatter: function (value) {
+                            if (value >= 1000000000) {
+                                return (value / 1000000000).toFixed(1) + 'B';
+                            }
+                            if (value >= 1000000) {
+                                return (value / 1000000).toFixed(1) + 'M';
+                            }
+                            if (value >= 1000) {
+                                return (value / 1000).toFixed(1) + 'K';
+                            }
+                            return value;
+                        }
                     }
                 },
                 {
@@ -103,39 +110,36 @@
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true,
-                        formatter: (params) => Math.round(params.value) + '%'
+                        show: false
                     },
                     emphasis: {
                         focus: 'series'
                     },
-                    data: argentinaPercentage
+                    data: argentinaData
                 },
                 {
                     name: 'Brazil',
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true,
-                        formatter: (params) => Math.round(params.value) + '%'
+                        show: false
                     },
                     emphasis: {
                         focus: 'series'
                     },
-                    data: brazilPercentage
+                    data: brazilData
                 },
                 {
                     name: 'USA',
                     type: 'bar',
                     stack: 'total',
                     label: {
-                        show: true,
-                        formatter: (params) => Math.round(params.value) + '%'
+                        show: false
                     },
                     emphasis: {
                         focus: 'series'
                     },
-                    data: usaPercentage
+                    data: usaData
                 },
                 {
                     name: 'Unit Price',
