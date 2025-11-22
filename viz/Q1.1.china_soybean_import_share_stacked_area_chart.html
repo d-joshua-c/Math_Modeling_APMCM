@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 3 Soybean Import Share</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
+</head>
+<body>
+    <div id="chart" style="width: 50%; height: 500px;"></div>
+
+    <script>
+        const chart = echarts.init(document.getElementById('chart'));
+        const option = {
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true, name: 'Q1.1.china_soybean_import_share_stacked_area_chart'}
+                }
+            },
+            title: {
+                text: 'Top 3 Soybean Import Share (2024-2025)',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: {
+                        backgroundColor: '#6a7985'
+                    }
+                }
+            },
+            legend: {
+                data: [],
+                top: 30
+            },
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: []
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    formatter: '{value} %'
+                }
+            },
+            series: []
+        };
+        chart.setOption(option);
+
+        Papa.parse('../data/processed/china-import-2024~2025.csv', {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                const data = results.data;
+
+                const shareData = {};
+                const totalValueByMonth = {};
+
+                data.forEach(row => {
+                    if (row.refMonth) {
+                        const month = row.refMonth;
+                        const country = row.reporterISO;
+                        const value = row.cifvalue;
+
+                        if (!totalValueByMonth[month]) {
+                            totalValueByMonth[month] = 0;
+                        }
+                        totalValueByMonth[month] += value;
+
+                        if (!shareData[country]) {
+                            shareData[country] = {};
+                        }
+                        if (!shareData[country][month]) {
+                            shareData[country][month] = 0;
+                        }
+                        shareData[country][month] += value;
+                    }
+                });
+
+                const countryTotals = {};
+                Object.keys(shareData).forEach(country => {
+                    countryTotals[country] = Object.values(shareData[country]).reduce((a, b) => a + b, 0);
+                });
+
+                const top3Countries = Object.keys(countryTotals).sort((a, b) => countryTotals[b] - countryTotals[a]).slice(0, 3);
+
+                const dates = Object.keys(totalValueByMonth).sort();
+                const series = top3Countries.map(country => {
+                    return {
+                        name: country,
+                        type: 'line',
+                        stack: 'total',
+                        areaStyle: {},
+                        emphasis: { focus: 'series' },
+                        data: dates.map(date => {
+                            const countryValue = shareData[country][date] || 0;
+                            const totalValue = totalValueByMonth[date];
+                            return totalValue > 0 ? (countryValue / totalValue * 100).toFixed(2) : 0;
+                        })
+                    };
+                });
+
+                chart.setOption({
+                    legend: { data: top3Countries },
+                    xAxis: { data: dates },
+                    series: series
+                });
+            }
+        });
+    </script>
+</body>
+</html>
