@@ -20,3 +20,8 @@ dependencies = [
     "xlrd>=2.0.2",
     "yfinance>=0.2.66",
 ]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.6",
+]

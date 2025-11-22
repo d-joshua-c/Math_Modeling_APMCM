@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>China Soybean Imports</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 100%;height:600px;"></div>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // Data from the CSV file will be processed and put here.
+        // Let's define a sample structure for now.
+        const data = [
+            {refMonth: '2024-01', Argentina: 0, Brazil: 1962054000, USA: 3816904700, Argentina_cif: 1406862428.55, Brazil_cif: 13875521189.0, USA_cif: 49897756362.0},
+            {refMonth: '2024-02', Argentina: 0, Brazil: 4901600039, USA: 3253857911, Argentina_cif: 1076264486.05, Brazil_cif: 13423567076.0, USA_cif: 45592370635.0},
+            {refMonth: '2024-03', Argentina: 0, Brazil: 9016105030, USA: 1767744199, Argentina_cif: 986007350.20, Brazil_cif: 16680126757.0, USA_cif: 43600496244.0},
+            {refMonth: '2024-04', Argentina: 164512000, Brazil: 9838487010, USA: 533153246.664, Argentina_cif: 1151294070.3, Brazil_cif: 18398756674.0, USA_cif: 43440690181.0},
+            {refMonth: '2024-05', Argentina: 1387600000, Brazil: 9988298063, USA: 290975083.5, Argentina_cif: 2299177526.71, Brazil_cif: 18431581225.0, USA_cif: 46256056563.0},
+            {refMonth: '2024-06', Argentina: 1350020000, Brazil: 10621320084, USA: 22134255.602, Argentina_cif: 2265038756.61, Brazil_cif: 20095512889.0, USA_cif: 45444166699.0},
+            {refMonth: '2024-07', Argentina: 334744000, Brazil: 8921288000, USA: 24173199.608, Argentina_cif: 1514659685.11, Brazil_cif: 19616299476.0, USA_cif: 51559836760.0},
+            {refMonth: '2024-08', Argentina: 416378000, Brazil: 5922101000, USA: 291526339.707, Argentina_cif: 1481515315.13, Brazil_cif: 15616302370.0, USA_cif: 51960548621.0},
+            {refMonth: '2024-09', Argentina: 265545000, Brazil: 4315064366, USA: 988940939.332, Argentina_cif: 1777953232.3, Brazil_cif: 15016751131.0, USA_cif: 54793674880.0},
+            {refMonth: '2024-10', Argentina: 0, Brazil: 3545968000, USA: 5769850578.926, Argentina_cif: 1585661697.48, Brazil_cif: 15058294191.0, USA_cif: 57631266743.0},
+            {refMonth: '2024-11', Argentina: 0, Brazil: 2152970003, USA: 5771964214.211, Argentina_cif: 1412592307.28, Brazil_cif: 12283852922.0, USA_cif: 53215292348.0},
+            {refMonth: '2024-12', Argentina: 0, Brazil: 1682481078, USA: 3786099275.078, Argentina_cif: 1419184389.91, Brazil_cif: 10994198394.0, USA_cif: 51846540655.0},
+            {refMonth: '2025-01', Argentina: 0, Brazil: 808773000, USA: 1621961199.145, Argentina_cif: 1673686372.68, Brazil_cif: 11820421740.0, USA_cif: 52288523135.0},
+            {refMonth: '2025-02', Argentina: 0, Brazil: 5029647000, USA: 1327225752.565, Argentina_cif: 1730406378.69, Brazil_cif: 15175309686.0, USA_cif: 42710191437.0},
+            {refMonth: '2025-03', Argentina: 0, Brazil: 11140739000, USA: 1755518231.499, Argentina_cif: 1498837182.96, Brazil_cif: 18276199903.0, USA_cif: 41652742910.0},
+            {refMonth: '2025-04', Argentina: 0, Brazil: 10759099000, USA: 487366534.537, Argentina_cif: 1699834140.06, Brazil_cif: 17912722637.0, USA_cif: 33795634946.0},
+            {refMonth: '2025-05', Argentina: 1119725000, Brazil: 10378125458, USA: 135215303.799, Argentina_cif: 2435010905.62, Brazil_cif: 19081619195.0, USA_cif: 27108065124.0},
+            {refMonth: '2025-06', Argentina: 909144000, Brazil: 10350542033, USA: 40008, Argentina_cif: 2441015321.59, Brazil_cif: 20110559534.0, USA_cif: 28390610154.0},
+            {refMonth: '2025-07', Argentina: 0, Brazil: 9566859301, USA: 105516, Argentina_cif: 0, Brazil_cif: 19682253447.0, USA_cif: 35708750974.0}
+        ];
+
+        const months = data.map(item => item.refMonth);
+        const argentinaData = data.map(item => item.Argentina);
+        const brazilData = data.map(item => item.Brazil);
+        const usaData = data.map(item => item.USA);
+
+        const totalQuantities = data.map((item, i) => item.Argentina + item.Brazil + item.USA);
+        const totalCif = data.map((item, i) => item.Argentina_cif + item.Brazil_cif + item.USA_cif);
+
+        const unitPrice = totalCif.map((cif, i) => totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0); // price per ton
+
+        const argentinaPercentage = argentinaData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
+        const brazilPercentage = brazilData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
+        const usaPercentage = usaData.map((qty, i) => totalQuantities[i] > 0 ? (qty / totalQuantities[i]) * 100 : 0);
+
+        var option = {
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    crossStyle: {
+                        color: '#999'
+                    }
+                }
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                data: ['Argentina', 'Brazil', 'USA', 'Unit Price']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    data: months,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: 'Import Percentage',
+                    min: 0,
+                    max: 100,
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                },
+                {
+                    type: 'value',
+                    name: 'Unit Price (USD/ton)',
+                    axisLabel: {
+                        formatter: '${value}'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: 'Argentina',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true,
+                        formatter: (params) => Math.round(params.value) + '%'
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: argentinaPercentage
+                },
+                {
+                    name: 'Brazil',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true,
+                        formatter: (params) => Math.round(params.value) + '%'
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: brazilPercentage
+                },
+                {
+                    name: 'USA',
+                    type: 'bar',
+                    stack: 'total',
+                    label: {
+                        show: true,
+                        formatter: (params) => Math.round(params.value) + '%'
+                    },
+                    emphasis: {
+                        focus: 'series'
+                    },
+                    data: usaPercentage
+                },
+                {
+                    name: 'Unit Price',
+                    type: 'line',
+                    yAxisIndex: 1,
+                    tooltip: {
+                        valueFormatter: function (value) {
+                            return '$' + value.toFixed(2) + ' / ton';
+                        }
+                    },
+                    data: unitPrice
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
