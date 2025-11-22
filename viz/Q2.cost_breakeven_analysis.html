@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>The Cost Break-even Analysis</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 1000px;height:600px;"></div>
+    <script type="text/javascript">
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // Parameters for the cost model
+        const costUsa = 21000;
+        const costMexico = 22000;
+        const costJapanBase = 19000;
+        const tariffBaseJapan = 11428.57;
+        const thresholdTariff = 0.175;
+
+        // Generate data
+        let tariffs = [];
+        let costsJapan = [];
+        let costsMexico = [];
+        let costsUsa = [];
+
+        for (let i = 0; i <= 100; i++) {
+            let tariff = i / 100;
+            tariffs.push(i);
+            costsUsa.push(costUsa);
+            costsMexico.push(costMexico);
+            costsJapan.push(costJapanBase + tariffBaseJapan * tariff);
+        }
+
+        var option = {
+            title: {
+                text: 'The Cost Break-even Analysis',
+                subtext: 'Impact of Tariffs on Production Location Decision',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'axis',
+                formatter: function (params) {
+                    let res = 'Tariff: ' + params[0].axisValue + '%<br/>';
+                    params.forEach(param => {
+                        res += param.marker + ' ' + param.seriesName + ': $' + param.value.toFixed(2) + '<br/>';
+                    });
+                    return res;
+                }
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {name: 'Q2.cost_breakeven_analysis'}
+                }
+            },
+            legend: {
+                data: ['Cost Japan', 'Cost Mexico', 'Cost USA'],
+                top: 50
+            },
+            grid: {
+                top: 100,
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            xAxis: {
+                type: 'category',
+                name: 'Tariff Rate (%)',
+                nameLocation: 'middle',
+                nameGap: 30,
+                boundaryGap: false,
+                data: tariffs
+            },
+            yAxis: {
+                type: 'value',
+                name: 'Total Cost per Vehicle ($)',
+                min: 18000,
+                max: 24000,
+                axisLabel: {
+                    formatter: '${value}'
+                }
+            },
+            series: [
+                {
+                    name: 'Cost Japan',
+                    type: 'line',
+                    showSymbol: false,
+                    data: costsJapan,
+                    itemStyle: { color: 'red' },
+                    markLine: {
+                        symbol: 'none',
+                        data: [
+                            {
+                                name: 'Threshold Tariff',
+                                xAxis: (thresholdTariff * 100).toFixed(1),
+                                label: {
+                                    formatter: 'Threshold Tariff: {c}%',
+                                    position: 'insideStartTop'
+                                }
+                            }
+                        ]
+                    },
+                    markPoint: {
+                        data: [
+                            {
+                                name: 'Break-even Point',
+                                coord: [(thresholdTariff * 100).toFixed(1), costUsa],
+                                symbolSize: 15,
+                                label: {
+                                    position: 'top',
+                                    formatter: 'Break-even'
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    name: 'Cost Mexico',
+                    type: 'line',
+                    showSymbol: false,
+                    data: costsMexico,
+                    itemStyle: { color: 'green' }
+                },
+                {
+                    name: 'Cost USA',
+                    type: 'line',
+                    showSymbol: false,
+                    data: costsUsa,
+                    itemStyle: { color: 'blue' }
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+    </script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Japan's Automotive Supply Chain Diversion Under Tariff Impact</title>
+    <!-- Import ECharts Library -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { display: flex; gap: 30px; margin-top: 20px; }
+        .chart-box { flex: 1; height: 500px; border: 1px solid #eee; padding: 10px; }
+        h1 { text-align: center; color: #333; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+        .note { margin-top: 20px; color: #888; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <h1>Visualization of Japan's Automotive Supply Chain Diversion Under Tariff Impact</h1>
+    <div class="subtitle">Baseline Scenario (No High Tariffs) vs. High Tariff Scenario (25% U.S. Tariff)</div>
+
+    <div class="container">
+        <!-- Sankey Diagram for Baseline Scenario -->
+        <div class="chart-box" id="base-chart"></div>
+        <!-- Sankey Diagram for High Tariff Scenario -->
+        <div class="chart-box" id="tariff-chart"></div>
+    </div>
+
+    <div class="note">
+        <p><strong>Data Note:</strong> Flow percentages are based on 2024 actual data (Baseline Scenario) and 2025 projected data (High Tariff Scenario); line width represents flow volume.</p>
+        <p><strong>Data Sources:</strong> USITC, JAMA (Japan Automobile Manufacturers Association), Nomura Securities, Toyota/Honda Official Announcements (2024-2025).</p>
+        <p><strong>Boundary Note:</strong> Data is based on information available as of November 2025; changes in tariff policies may alter actual supply chain flows.</p>
+    </div>
+
+    <script>
+        // Common Node Definition (Shared by Both Charts)
+        const nodes = [
+            { name: "Japanese Factories", itemStyle: { color: "#4895ef" } },    // Blue
+            { name: "Mexican Factories", itemStyle: { color: "#f9c74f" } },    // Yellow
+            { name: "U.S. Local Factories", itemStyle: { color: "#90a959" } }, // Green
+            { name: "U.S. Market", itemStyle: { color: "#e07a5f" } }           // Orange
+        ];
+
+        // 1. Configuration for Baseline Scenario (No High Tariffs)
+        const baseOption = {
+            title: { text: "Baseline Scenario (No High Tariffs)", left: "center" },
+            tooltip: { trigger: "item", formatter: "{b}: {c}%" },
+            series: [{
+                type: "sankey",
+                layout: "none",
+                emphasis: { focus: "adjacency" },
+                lineStyle: { color: "source", curveness: 0.5 },
+                data: nodes,
+                links: [
+                    { source: "Japanese Factories", target: "U.S. Market", value: 35, label: { show: true } },  // Direct Export
+                    { source: "Japanese Factories", target: "Mexican Factories", value: 40, label: { show: true } },  // Transshipment via Mexico
+                    { source: "Japanese Factories", target: "U.S. Local Factories", value: 25, label: { show: true } },  // U.S. Local Production
+                    { source: "Mexican Factories", target: "U.S. Market", value: 40, label: { show: true } },  // Mexican Transshipment to U.S.
+                    { source: "U.S. Local Factories", target: "U.S. Market", value: 25, label: { show: true } }   // Local Supply to U.S. Market
+                ]
+            }]
+        };
+
+        // 2. Configuration for High Tariff Scenario (25% U.S. Tariff)
+        const tariffOption = {
+            title: { text: "High Tariff Scenario (25% U.S. Tariff)", left: "center" },
+            tooltip: { trigger: "item", formatter: "{b}: {c}%" },
+            series: [{
+                type: "sankey",
+                layout: "none",
+                emphasis: { focus: "adjacency" },
+                lineStyle: { color: "source", curveness: 0.5, width: 2 },
+                data: nodes,
+                links: [
+                    { source: "Japanese Factories", target: "U.S. Market", value: 15, label: { show: true } },  // Shrinking Direct Export
+                    { source: "Japanese Factories", target: "Mexican Factories", value: 60, label: { show: true }, lineStyle: { width: 4 } },  // Surge in Mexican Transshipment (Thickened Line)
+                    { source: "Japanese Factories", target: "U.S. Local Factories", value: 25, label: { show: true } },  // Stable Local Production
+                    { source: "Mexican Factories", target: "U.S. Market", value: 60, label: { show: true }, lineStyle: { width: 4 } },  // Soaring Mexican Transshipment to U.S. (Thickened Line)
+                    { source: "U.S. Local Factories", target: "U.S. Market", value: 25, label: { show: true } }   // Stable Local Supply
+                ]
+            }]
+        };
+
+        // Initialize Charts
+        const baseChart = echarts.init(document.getElementById("base-chart"));
+        const tariffChart = echarts.init(document.getElementById("tariff-chart"));
+
+        // Render Charts
+        baseChart.setOption(baseOption);
+        tariffChart.setOption(tariffOption);
+
+        // Responsive Resizing
+        window.addEventListener("resize", () => {
+            baseChart.resize();
+            tariffChart.resize();
+        });
+    </script>
+</body>
+</html>
