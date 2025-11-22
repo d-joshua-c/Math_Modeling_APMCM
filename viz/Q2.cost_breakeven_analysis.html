@@ -16,6 +16,9 @@
         const costJapanBase = 19000;
         const tariffBaseJapan = 11428.57;
         const thresholdTariff = 0.175;
+        const thresholdPercent = +(thresholdTariff * 100).toFixed(1);
+        const thresholdTariffMexico = (costMexico - costJapanBase) / tariffBaseJapan;
+        const thresholdMexicoPercent = +(thresholdTariffMexico * 100).toFixed(1);
 
         // Generate data
         let tariffs = [];
@@ -89,12 +92,21 @@
                     itemStyle: { color: 'red' },
                     markLine: {
                         symbol: 'none',
+                        lineStyle: { type: 'dashed', color: '#999', width: 1 },
                         data: [
                             {
                                 name: 'Threshold Tariff',
-                                xAxis: (thresholdTariff * 100).toFixed(1),
+                                xAxis: thresholdPercent,
                                 label: {
-                                    formatter: 'Threshold Tariff: {c}%',
+                                    formatter: 'Threshold Tariff: ' + thresholdPercent + '%',
+                                    position: 'insideStartTop'
+                                }
+                            },
+                            {
+                                name: 'Japan-Mexico Threshold',
+                                xAxis: thresholdMexicoPercent,
+                                label: {
+                                    formatter: 'Japan-Mexico Threshold: ' + thresholdMexicoPercent + '%',
                                     position: 'insideStartTop'
                                 }
                             }
@@ -103,12 +115,23 @@
                     markPoint: {
                         data: [
                             {
-                                name: 'Break-even Point',
-                                coord: [(thresholdTariff * 100).toFixed(1), costUsa],
-                                symbolSize: 15,
+                                name: 'Break-even: Japan vs USA',
+                                coord: [thresholdPercent, costUsa],
+                                symbol: 'circle',
+                                symbolSize: 16,
                                 label: {
                                     position: 'top',
-                                    formatter: 'Break-even'
+                                    formatter: 'Japan vs USA'
+                                }
+                            },
+                            {
+                                name: 'Break-even: Japan vs Mexico',
+                                coord: [thresholdMexicoPercent, costMexico],
+                                symbol: 'circle',
+                                symbolSize: 16,
+                                label: {
+                                    position: 'top',
+                                    formatter: 'Japan vs Mexico'
                                 }
                             }
                         ]
