@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Comprehensive Analysis of US Tariff Policy Impact on Soybean Industry</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-statistics@7.7.5/dist/simple-statistics.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chart-container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; padding: 20px; }
+        .chart-box { border: 1px solid #ccc; padding: 15px; border-radius: 8px; }
+        .chart-title { text-align: center; font-size: 16px; font-weight: bold; margin-bottom: 15px; }
+        .full-width { grid-column: 1 / -1; text-align: center; font-size: 24px; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="chart-box">
+            <div id="indicator-weights-chart" style="width: 50%; height: 500px;"></div>
+        </div>
+    <div class="chart-container">
+        
+        <div class="chart-box">
+            <div class="chart-title">Pre-Tariff Comprehensive Score</div>
+            <div id="pre-tariff-score-chart" style="width: 50%; height: 300px;"></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Post-Tariff Comprehensive Score</div>
+            <div id="post-tariff-score-chart" style="width: 50%; height: 300px;"></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Market Share Change</div>
+            <div id="market-share-chart" style="width: 50%; height: 300px;"></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Score Change Before and After Tariff Adjustment</div>
+            <div id="score-change-chart" style="width: 50%; height: 300px;"></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Multi-dimensional Indicator Radar Chart</div>
+            <div id="radar-chart" style="width: 50%; height: 400px;"></div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA & CALCULATION (Re-used and adapted from previous script) ---
+        const rawData = [
+            { refMonth: '2024-01-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1406862428.55 },
+            { refMonth: '2024-01-01', reporterISO: 'Brazil', qty: 1962054000.0, cifvalue: 13875521189.0 },
+            { refMonth: '2024-01-01', reporterISO: 'USA', qty: 3816904700.0, cifvalue: 49897756362.0 },
+            { refMonth: '2024-02-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1076264486.05 },
+            { refMonth: '2024-02-01', reporterISO: 'Brazil', qty: 4901600039.0, cifvalue: 13423567076.0 },
+            { refMonth: '2024-02-01', reporterISO: 'USA', qty: 3253857911.0, cifvalue: 45592370635.0 },
+            { refMonth: '2024-03-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 986007350.2 },
+            { refMonth: '2024-03-01', reporterISO: 'Brazil', qty: 9016105030.0, cifvalue: 16680126757.0 },
+            { refMonth: '2024-03-01', reporterISO: 'USA', qty: 1767744199.0, cifvalue: 43600496244.0 },
+            { refMonth: '2024-04-01', reporterISO: 'Argentina', qty: 164512000.0, cifvalue: 1151294070.3 },
+            { refMonth: '2024-04-01', reporterISO: 'Brazil', qty: 9838487010.0, cifvalue: 18398756674.0 },
+            { refMonth: '2024-04-01', reporterISO: 'USA', qty: 533153246.664, cifvalue: 43440690181.0 },
+            { refMonth: '2024-05-01', reporterISO: 'Argentina', qty: 1387600000.0, cifvalue: 2299177526.71 },
+            { refMonth: '2024-05-01', reporterISO: 'Brazil', qty: 9988298063.0, cifvalue: 18431581225.0 },
+            { refMonth: '2024-05-01', reporterISO: 'USA', qty: 290975083.5, cifvalue: 46256056563.0 },
+            { refMonth: '2024-06-01', reporterISO: 'Argentina', qty: 1350020000.0, cifvalue: 2265038756.61 },
+            { refMonth: '2024-06-01', reporterISO: 'Brazil', qty: 10621320084.0, cifvalue: 20095512889.0 },
+            { refMonth: '2024-06-01', reporterISO: 'USA', qty: 22134255.602, cifvalue: 45444166699.0 },
+            { refMonth: '2024-07-01', reporterISO: 'Argentina', qty: 334744000.0, cifvalue: 1514659685.11 },
+            { refMonth: '2024-07-01', reporterISO: 'Brazil', qty: 8921288000.0, cifvalue: 19616299476.0 },
+            { refMonth: '2024-07-01', reporterISO: 'USA', qty: 24173199.608, cifvalue: 51559836760.0 },
+            { refMonth: '2024-08-01', reporterISO: 'Argentina', qty: 416378000.0, cifvalue: 1481515315.13 },
+            { refMonth: '2024-08-01', reporterISO: 'Brazil', qty: 5922101000.0, cifvalue: 15616302370.0 },
+            { refMonth: '2024-08-01', reporterISO: 'USA', qty: 291526339.707, cifvalue: 51960548621.0 },
+            { refMonth: '2024-09-01', reporterISO: 'Argentina', qty: 265545000.0, cifvalue: 1777953232.3 },
+            { refMonth: '2024-09-01', reporterISO: 'Brazil', qty: 4315064366.0, cifvalue: 15016751131.0 },
+            { refMonth: '2024-09-01', reporterISO: 'USA', qty: 988940939.332, cifvalue: 54793674880.0 },
+            { refMonth: '2024-10-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1585661697.48 },
+            { refMonth: '2024-10-01', reporterISO: 'Brazil', qty: 3545968000.0, cifvalue: 15058294191.0 },
+            { refMonth: '2024-10-01', reporterISO: 'USA', qty: 5769850578.926, cifvalue: 57631266743.0 },
+            { refMonth: '2024-11-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1412592307.28 },
+            { refMonth: '2024-11-01', reporterISO: 'Brazil', qty: 2152970003.0, cifvalue: 12283852922.0 },
+            { refMonth: '2024-11-01', reporterISO: 'USA', qty: 5771964214.211, cifvalue: 53215292348.0 },
+            { refMonth: '2024-12-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1419184389.91 },
+            { refMonth: '2024-12-01', reporterISO: 'Brazil', qty: 1682481078.0, cifvalue: 10994198394.0 },
+            { refMonth: '2024-12-01', reporterISO: 'USA', qty: 3786099275.078, cifvalue: 51846540655.0 },
+            { refMonth: '2025-01-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1673686372.68 },
+            { refMonth: '2025-01-01', reporterISO: 'Brazil', qty: 808773000.0, cifvalue: 11820421740.0 },
+            { refMonth: '2025-01-01', reporterISO: 'USA', qty: 1621961199.145, cifvalue: 52288523135.0 },
+            { refMonth: '2025-02-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1730406378.69 },
+            { refMonth: '2025-02-01', reporterISO: 'Brazil', qty: 5029647000.0, cifvalue: 15175309686.0 },
+            { refMonth: '2025-02-01', reporterISO: 'USA', qty: 1327225752.565, cifvalue: 42710191437.0 },
+            { refMonth: '2025-03-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1498837182.96 },
+            { refMonth: '2025-03-01', reporterISO: 'Brazil', qty: 11140739000.0, cifvalue: 18276199903.0 },
+            { refMonth: '2025-03-01', reporterISO: 'USA', qty: 1755518231.499, cifvalue: 41652742910.0 },
+            { refMonth: '2025-04-01', reporterISO: 'Argentina', qty: 0.0, cifvalue: 1699834140.06 },
+            { refMonth: '2025-04-01', reporterISO: 'Brazil', qty: 10759099000.0, cifvalue: 17912722637.0 },
+            { refMonth: '2025-04-01', reporterISO: 'USA', qty: 487366534.537, cifvalue: 33795634946.0 },
+            { refMonth: '2025-05-01', reporterISO: 'Argentina', qty: 1119725000.0, cifvalue: 2435010905.62 },
+            { refMonth: '2025-05-01', reporterISO: 'Brazil', qty: 10378125458.0, cifvalue: 19081619195.0 },
+            { refMonth: '2025-05-01', reporterISO: 'USA', qty: 135215303.799, cifvalue: 27108065124.0 },
+            { refMonth: '2025-06-01', reporterISO: 'Argentina', qty: 909144000.0, cifvalue: 2441015321.59 },
+            { refMonth: '2025-06-01', reporterISO: 'Brazil', qty: 10350542033.0, cifvalue: 20110559534.0 },
+            { refMonth: '2025-06-01', reporterISO: 'USA', qty: 40008.0, cifvalue: 28390610154.0 },
+            { refMonth: '2025-07-01', reporterISO: 'Brazil', qty: 9566859301.0, cifvalue: 19682253447.0 },
+            { refMonth: '2025-07-01', reporterISO: 'USA', qty: 105516.0, cifvalue: 35708750974.0 }
+        ];
+
+        const countries = ['USA', 'Brazil', 'Argentina'];
+        const preTariffData = rawData.filter(d => d.refMonth.startsWith('2024'));
+        const postTariffData = rawData.filter(d => d.refMonth.startsWith('2025'));
+
+        function calculateMetrics(data, country, totalMarketVolume) {
+            const df_period = data.filter(d => d.reporterISO === country);
+            if (df_period.length === 0) return null;
+
+            const total_volume = ss.sum(df_period.map(d => d.qty));
+            const total_value = ss.sum(df_period.map(d => d.cifvalue));
+            const avg_monthly_volume = ss.mean(df_period.map(d => d.qty));
+            const market_share = (total_volume / totalMarketVolume) * 100;
+            const avg_unit_price = total_volume > 0 ? (total_value / total_volume) * 1000 : 0;
+            const volumes = df_period.map(d => d.qty);
+            const cv = volumes.length > 1 ? ss.standardDeviation(volumes) / ss.mean(volumes) : 0;
+            const stability = 1 / (1 + cv);
+            let trend_coef = 0;
+            if (df_period.length > 1) {
+                const line = ss.linearRegression(df_period.map((_, i) => [i, volumes[i]]));
+                trend_coef = line.m;
+            }
+
+            return { total_volume, total_value, avg_monthly_volume, market_share, avg_unit_price, stability, trend_coef };
+        }
+
+        const preTotalMarketVolume = ss.sum(preTariffData.map(d => d.qty));
+        const postTotalMarketVolume = ss.sum(postTariffData.map(d => d.qty));
+
+        const preMetrics = countries.map(c => calculateMetrics(preTariffData, c, preTotalMarketVolume));
+        const postMetrics = countries.map(c => calculateMetrics(postTariffData, c, postTotalMarketVolume));
+
+        const weights = { total_volume: 0.129, total_value: 0.166, avg_monthly_volume: 0.129, market_share: 0.166, avg_unit_price: 0.122, stability: 0.289, trend_coef: 0.111 };
+        const indicators = Object.keys(weights);
+
+        function normalize(metrics) {
+            const normalized = {};
+            indicators.forEach(ind => {
+                const values = metrics.map(m => m ? m[ind] : 0);
+                const min = ss.min(values);
+                const max = ss.max(values);
+                normalized[ind] = values.map(v => (max - min) === 0 ? 0.5 : (v - min) / (max - min));
+                if (ind === 'avg_unit_price') {
+                    normalized[ind] = normalized[ind].map(v => 1 - v);
+                }
+            });
+            return normalized;
+        }
+
+        const preNormalized = normalize(preMetrics);
+        const postNormalized = normalize(postMetrics);
+
+        function calculateScores(normalizedMetrics) {
+            const scores = [0, 0, 0];
+            indicators.forEach(ind => {
+                for (let i = 0; i < 3; i++) {
+                    scores[i] += (normalizedMetrics[ind][i] || 0) * weights[ind];
+                }
+            });
+            return scores;
+        }
+
+        const preScores = calculateScores(preNormalized);
+        const postScores = calculateScores(postNormalized);
+
+        // --- CHARTING --- 
+        const colors = { pre: '#5470C6', post: '#EE6666' };
+        const countryColors = {'USA': '#EE6666', 'Brazil': '#91CC75', 'Argentina': '#5470C6'};
+
+        // 1. Indicator Weights Chart
+        const indicatorWeightsChart = echarts.init(document.getElementById('indicator-weights-chart'));
+        indicatorWeightsChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            xAxis: { type: 'category', data: indicators.map(i => i.replace(/_/g, ' ')) },
+            yAxis: { type: 'value', name: 'Weight' },
+            series: [{ name: 'Weight', type: 'bar', data: Object.values(weights) }],
+            toolbar:{}
+        });
+
+        // 2. Pre-Tariff Score Chart
+        const preTariffScoreChart = echarts.init(document.getElementById('pre-tariff-score-chart'));
+        preTariffScoreChart.setOption({
+            tooltip: { trigger: 'item' },
+            xAxis: { type: 'value' },
+            yAxis: { type: 'category', data: countries, inverse: true },
+            series: [{
+                name: 'Score', type: 'bar', data: countries.map((c, i) => ({ 
+                    value: preScores[i], 
+                    itemStyle: { color: countryColors[c] } 
+                })),
+                label: { show: true, position: 'right', formatter: '{c}' }
+            }]
+        });
+
+        // 3. Post-Tariff Score Chart
+        const postTariffScoreChart = echarts.init(document.getElementById('post-tariff-score-chart'));
+        postTariffScoreChart.setOption({
+            tooltip: { trigger: 'item' },
+            xAxis: { type: 'value' },
+            yAxis: { type: 'category', data: countries, inverse: true },
+            series: [{
+                name: 'Score', type: 'bar', data: countries.map((c, i) => ({ 
+                    value: postScores[i], 
+                    itemStyle: { color: countryColors[c] } 
+                })),
+                label: { show: true, position: 'right', formatter: '{c}' }
+            }]
+        });
+
+        // 4. Market Share Change Chart
+        const marketShareChart = echarts.init(document.getElementById('market-share-chart'));
+        marketShareChart.setOption({
+            tooltip: { trigger: 'axis', axisPointer: { type: 'shadow' } },
+            legend: { data: ['Pre-Tariff', 'Post-Tariff'] },
+            xAxis: { type: 'category', data: countries },
+            yAxis: { type: 'value', name: 'Market Share (%)' },
+            series: [
+                { name: 'Pre-Tariff', type: 'bar', itemStyle: { color: colors.pre }, data: preMetrics.map(m => m.market_share.toFixed(2)) },
+                { name: 'Post-Tariff', type: 'bar', itemStyle: { color: colors.post }, data: postMetrics.map(m => m.market_share.toFixed(2)) }
+            ]
+        });
+
+        // 5. Score Change Chart
+        const scoreChangeChart = echarts.init(document.getElementById('score-change-chart'));
+        scoreChangeChart.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['Pre-Tariff', 'Post-Tariff'] },
+            xAxis: { type: 'category', data: countries },
+            yAxis: { type: 'value', name: 'TOPSIS Score' },
+            series: [
+                { name: 'Pre-Tariff', type: 'line', symbol: 'circle', symbolSize: 10, itemStyle: { color: colors.pre }, data: preScores.map(s => s.toFixed(4)) },
+                { name: 'Post-Tariff', type: 'line', symbol: 'circle', symbolSize: 10, itemStyle: { color: colors.post }, data: postScores.map(s => s.toFixed(4)) }
+            ]
+        });
+
+        // 6. Radar Chart
+        const radarChart = echarts.init(document.getElementById('radar-chart'));
+        radarChart.setOption({
+            title: { text: 'Multi-dimensional Indicator Radar Chart' },
+            legend: { data: countries.flatMap(c => [`${c} (Pre)`, `${c} (Post)`]), top: 30 },
+            radar: {
+                indicator: indicators.map(i => ({ name: i.replace(/_/g, ' '), max: 1 }))
+            },
+            series: [{
+                type: 'radar',
+                data: countries.map((country, i) => ({
+                    value: indicators.map(ind => preNormalized[ind][i]),
+                    name: `${country} (Pre)`,
+                    itemStyle: { color: countryColors[country] },
+                    lineStyle: { type: 'solid' }
+                })).concat(countries.map((country, i) => ({
+                    value: indicators.map(ind => postNormalized[ind][i]),
+                    name: `${country} (Post)`,
+                    itemStyle: { color: countryColors[country] },
+                    lineStyle: { type: 'dashed' }
+                })))
+            }]
+        });
+
+    </script>
+
+</body>
+</html>
