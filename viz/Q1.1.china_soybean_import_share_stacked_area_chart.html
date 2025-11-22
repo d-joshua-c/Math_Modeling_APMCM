@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Top 3 Soybean Import Share</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/papaparse@5.3.2/papaparse.min.js"></script>
 </head>
 <body>
     <div id="chart" style="width: 100%; height: 500px;"></div>
@@ -22,7 +21,7 @@
                 }
             },
             title: {
-                text: 'Top 3 Soybean Import Share (2024-2025)',
+                text: 'Top 3 Soybean Import Share (2024-01 to 2025-05)',
                 left: 'center'
             },
             tooltip: {
@@ -59,66 +58,59 @@
         };
         chart.setOption(option);
 
-        Papa.parse('../data/processed/china-import-2024~2025.csv', {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            complete: function(results) {
-                const data = results.data;
+        const data = [
+            {refMonth: '2024-01', Argentina_cif: 3374784.2288212, Brazil_cif: 1003079398, USA_cif: 2032659060},
+            {refMonth: '2024-02', Argentina_cif: 3940208.89175099, Brazil_cif: 2167085063, USA_cif: 1686940270},
+            {refMonth: '2024-03', Argentina_cif: 10758562.4542694, Brazil_cif: 3814402261, USA_cif: 889516632},
+            {refMonth: '2024-04', Argentina_cif: 75156509.9999998, Brazil_cif: 4208922805, USA_cif: 290372611},
+            {refMonth: '2024-05', Argentina_cif: 612257469.999999, Brazil_cif: 4276186531, USA_cif: 157998991},
+            {refMonth: '2024-06', Argentina_cif: 589512599.999997, Brazil_cif: 4669990440, USA_cif: 12096915},
+            {refMonth: '2024-07', Argentina_cif: 142351215.0, Brazil_cif: 3921886966, USA_cif: 11109325},
+            {refMonth: '2024-08', Argentina_cif: 165192352.0, Brazil_cif: 2569489311, USA_cif: 135676575},
+            {refMonth: '2024-09', Argentina_cif: 109682440.0, Brazil_cif: 1815730555, USA_cif: 457465973},
+            {refMonth: '2024-10', Argentina_cif: 76603962.7998131, Brazil_cif: 1515953295, USA_cif: 2668039747},
+            {refMonth: '2024-11', Argentina_cif: 74280441.3794021, Brazil_cif: 919272757, USA_cif: 2668939452},
+            {refMonth: '2024-12', Argentina_cif: 91774599.6752133, Brazil_cif: 617888329, USA_cif: 1750554372},
+            {refMonth: '2025-01', Argentina_cif: 133506692.107957, Brazil_cif: 323952013, USA_cif: 749892576},
+            {refMonth: '2025-02', Argentina_cif: 207017362.63385, Brazil_cif: 1985952505, USA_cif: 613631665},
+            {refMonth: '2025-03', Argentina_cif: 300098367.328481, Brazil_cif: 4313221073, USA_cif: 811653185},
+            {refMonth: '2025-04', Argentina_cif: 403341697.870849, Brazil_cif: 4126925834, USA_cif: 225326621},
+            {refMonth: '2025-05', Argentina_cif: 438795839.999999, Brazil_cif: 4053433875, USA_cif: 62484173}
+        ];
 
-                const shareData = {};
-                const totalValueByMonth = {};
-
-                data.forEach(row => {
-                    if (row.refMonth) {
-                        const month = row.refMonth;
-                        const country = row.reporterISO;
-                        const value = row.cifvalue;
-
-                        if (!totalValueByMonth[month]) {
-                            totalValueByMonth[month] = 0;
-                        }
-                        totalValueByMonth[month] += value;
-
-                        if (!shareData[country]) {
-                            shareData[country] = {};
-                        }
-                        if (!shareData[country][month]) {
-                            shareData[country][month] = 0;
-                        }
-                        shareData[country][month] += value;
-                    }
-                });
-
-                const countryTotals = {};
-                Object.keys(shareData).forEach(country => {
-                    countryTotals[country] = Object.values(shareData[country]).reduce((a, b) => a + b, 0);
-                });
-
-                const top3Countries = Object.keys(countryTotals).sort((a, b) => countryTotals[b] - countryTotals[a]).slice(0, 3);
-
-                const dates = Object.keys(totalValueByMonth).sort();
-                const series = top3Countries.map(country => {
-                    return {
-                        name: country,
-                        type: 'line',
-                        stack: 'total',
-                        areaStyle: {},
-                        emphasis: { focus: 'series' },
-                        data: dates.map(date => {
-                            const countryValue = shareData[country][date] || 0;
-                            const totalValue = totalValueByMonth[date];
-                            return totalValue > 0 ? (countryValue / totalValue * 100).toFixed(2) : 0;
-                        })
-                    };
-                });
-
-                chart.setOption({
-                    legend: { data: top3Countries },
-                    xAxis: { data: dates },
-                    series: series
-                });
+        const months = data.map(d => d.refMonth);
+        const total = data.map(d => d.Argentina_cif + d.Brazil_cif + d.USA_cif);
+        const series = [
+            {
+                name: 'Argentina',
+                type: 'line',
+                stack: 'total',
+                areaStyle: {},
+                emphasis: { focus: 'series' },
+                data: data.map((d, i) => total[i] > 0 ? (d.Argentina_cif / total[i] * 100).toFixed(2) : 0)
+            },
+            {
+                name: 'Brazil',
+                type: 'line',
+                stack: 'total',
+                areaStyle: {},
+                emphasis: { focus: 'series' },
+                data: data.map((d, i) => total[i] > 0 ? (d.Brazil_cif / total[i] * 100).toFixed(2) : 0)
+            },
+            {
+                name: 'USA',
+                type: 'line',
+                stack: 'total',
+                areaStyle: {},
+                emphasis: { focus: 'series' },
+                data: data.map((d, i) => total[i] > 0 ? (d.USA_cif / total[i] * 100).toFixed(2) : 0)
             }
+        ];
+
+        chart.setOption({
+            legend: { data: ['Argentina', 'Brazil', 'USA'] },
+            xAxis: { data: months },
+            series: series
         });
     </script>
 </body>
