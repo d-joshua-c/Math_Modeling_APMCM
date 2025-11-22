@@ -5,6 +5,8 @@ from pathlib import Path
 from argparse import ArgumentParser
 from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.stattools import adfuller
+import warnings
+from statsmodels.tools.sm_exceptions import ConvergenceWarning
 
 
 def load_data(csv_path: Path) -> pd.Series:
@@ -27,6 +29,7 @@ def choose_sarima(y_log: pd.Series):
     best_aic = np.inf
     best_cfg = None
     best_model = None
+    warnings.simplefilter("ignore", ConvergenceWarning)
     for p in p_vals:
         for q in q_vals:
             for P in P_vals:
@@ -39,7 +42,10 @@ def choose_sarima(y_log: pd.Series):
                             enforce_stationarity=False,
                             enforce_invertibility=False,
                         )
-                        res = model.fit(disp=False)
+                        res = model.fit(disp=False, maxiter=200, method='lbfgs')
+                        ret = getattr(res, 'mle_retvals', {})
+                        if not ret.get('converged', True):
+                            continue
                         if res.aic < best_aic:
                             best_aic = res.aic
                             best_cfg = (p, 1, q, P, 1, Q, 12)
@@ -115,12 +121,17 @@ def main():
     best_cfg, best_model, best_aic = choose_sarima(y_log)
     print(f'最佳模型: {best_cfg}  AIC: {best_aic:.2f}')
 
-    # 预测未来48个月
     fc_df = forecast_48(y, best_model)
     print('预测前5条:')
     print(fc_df.head())
 
-    # 绘图展示
+    repo_root = Path(__file__).resolve().parents[1]
+    out_dir = repo_root / 'data' / 'processed'
+    out_dir.mkdir(parents=True, exist_ok=True)
+    fc_df.index.name = 'Month'
+    out_path = out_dir / 'Q4_IMPTOTUS_forecast_without_tariff_48m.csv'
+    fc_df.to_csv(out_path)
+
     plot_result(y, fc_df)
 
 
