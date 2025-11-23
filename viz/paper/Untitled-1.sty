@@ -1,0 +1,57 @@
+% -------------------------------------------------
+% 第五章：问题二（汽车产业）
+% -------------------------------------------------
+
+\section{Automobile Industry: Supply Chain Responses under Tariff Shock}
+
+\subsection{Current Position of Japanese Automobiles in the U.S. Market}
+The U.S. is the largest export destination for Japanese vehicles. Currently, the supply chain operates on a hybrid model: direct exports from Japan (high quality, tariff-sensitive) and localized production in North America (cost-efficient, tariff-exempt under USMCA). However, the proposed reciprocal tariffs threaten to disrupt this equilibrium, forcing manufacturers to re-evaluate their production facility locations.
+
+\subsection{Model: Non-Tariff Response Strategies}
+To simulate the strategic behavior of Japanese automakers, we establish a \textbf{Cost Minimization Model}. The objective is to select the production location $L \in \{\text{Japan}, \text{Mexico}, \text{USA}\}$ that minimizes the total unit cost $TC$:
+
+\begin{equation}
+    \min_{L} TC_L = C_{prod}^L + C_{logistics}^L + \mathbb{I}(L=\text{Japan}) \cdot (P \times \tau)
+\end{equation}
+
+Where $C_{prod}$ denotes production costs (influenced by labor rates), $C_{logistics}$ represents shipping fees, $P$ is the vehicle value, $\tau$ is the variable tariff rate, and $\mathbb{I}$ is an indicator function.
+
+\subsubsection{Break-even Analysis and Threshold Identification}
+By inputting labor and logistics parameters into the model, we analyzed the sensitivity of total costs to tariff variations (0\% to 100\%).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/Q2.cost_breakeven_analysis.png} % 替换为你的折线图文件名
+    \caption{The Cost Break-even Analysis of Production Locations. The red line intersects the blue line at approximately 18\%, indicating the critical threshold for strategy shifting.}
+    \label{fig:breakeven}
+\end{figure}
+
+As illustrated in Figure \ref{fig:breakeven}, the cost of direct exports from Japan (Red Line) rises linearly with tariffs. 
+\begin{itemize}
+    \item \textbf{Threshold $\tau^* \approx 18\%$}: When the tariff rate exceeds 18\%, the cost of producing in Japan surpasses the cost of producing in the U.S. (Blue Line).
+    \item \textbf{Strategic Shift}: Consequently, rational manufacturers will shift production capacity from Japan to the U.S. or Mexico (Green Line, assuming USMCA compliance) to avoid the tariff penalty.
+\end{itemize}
+
+\subsubsection{Supply Chain Reconfiguration}
+Based on the identified threshold, we simulated the flow of goods under a High Tariff Scenario (25\%). The structural change in the supply chain is visualized in Figure \ref{fig:sankey}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.95\linewidth]{figures/Q2.industry_transaction.png} % 替换为你的桑基图文件名
+    \caption{Visualization of Japan's Automotive Supply Chain Diversion. The comparison reveals a significant ''Trade Diversion Effect,'' where direct exports shrink while flows to Mexican and U.S. local factories expand.}
+    \label{fig:sankey}
+\end{figure}
+
+The Sankey diagrams demonstrate a clear \textbf{Trade Diversion Effect}:
+\begin{enumerate}
+    \item \textbf{Direct Export Compression}: The direct flow from Japanese factories to the U.S. market narrows significantly under high tariffs.
+    \item \textbf{Indirect Routing}: Flows via Mexican factories increase, utilizing Mexico as a manufacturing hub to bypass high direct tariffs.
+    \item \textbf{Reshoring to U.S.}: Investment in U.S. local factories expands, validating the effectiveness of tariffs in driving partial manufacturing reshoring (FDI).
+\end{enumerate}
+
+\subsection{Impact on U.S. Industry}
+The strategic shift entails dual impacts on the U.S. economy:
+\begin{itemize}
+    \item \textbf{Positive Impact on Employment}: The expansion of U.S. local factories (as shown in the green flow in Figure \ref{fig:sankey}) directly increases demand for domestic manufacturing labor.
+    \item \textbf{Negative Impact on Consumer Prices}: Although local production avoids tariffs, the baseline production cost in the U.S. ($C_{prod}^{USA}$) is higher than in Japan or Mexico due to labor costs. This cost premium will likely be passed on to U.S. consumers, leading to higher vehicle prices.
+\end{itemize}

@@ -12,33 +12,16 @@
     <script>
         const chart = echarts.init(document.getElementById('chart'));
 
-        const data = [
-            {refMonth: '2024-01', Argentina_cif: 3374784.2288212, Brazil_cif: 1003079398, USA_cif: 2032659060},
-            {refMonth: '2024-02', Argentina_cif: 3940208.89175099, Brazil_cif: 2167085063, USA_cif: 1686940270},
-            {refMonth: '2024-03', Argentina_cif: 10758562.4542694, Brazil_cif: 3814402261, USA_cif: 889516632},
-            {refMonth: '2024-04', Argentina_cif: 75156509.9999998, Brazil_cif: 4208922805, USA_cif: 290372611},
-            {refMonth: '2024-05', Argentina_cif: 612257469.999999, Brazil_cif: 4276186531, USA_cif: 157998991},
-            {refMonth: '2024-06', Argentina_cif: 589512599.999997, Brazil_cif: 4669990440, USA_cif: 12096915},
-            {refMonth: '2024-07', Argentina_cif: 142351215.0, Brazil_cif: 3921886966, USA_cif: 11109325},
-            {refMonth: '2024-08', Argentina_cif: 165192352.0, Brazil_cif: 2569489311, USA_cif: 135676575},
-            {refMonth: '2024-09', Argentina_cif: 109682440.0, Brazil_cif: 1815730555, USA_cif: 457465973},
-            {refMonth: '2024-10', Argentina_cif: 76603962.7998131, Brazil_cif: 1515953295, USA_cif: 2668039747},
-            {refMonth: '2024-11', Argentina_cif: 74280441.3794021, Brazil_cif: 919272757, USA_cif: 2668939452},
-            {refMonth: '2024-12', Argentina_cif: 91774599.6752133, Brazil_cif: 617888329, USA_cif: 1750554372},
-            {refMonth: '2025-01', Argentina_cif: 133506692.107957, Brazil_cif: 323952013, USA_cif: 749892576},
-            {refMonth: '2025-02', Argentina_cif: 207017362.63385, Brazil_cif: 1985952505, USA_cif: 613631665},
-            {refMonth: '2025-03', Argentina_cif: 300098367.328481, Brazil_cif: 4313221073, USA_cif: 811653185},
-            {refMonth: '2025-04', Argentina_cif: 403341697.870849, Brazil_cif: 4126925834, USA_cif: 225326621},
-            {refMonth: '2025-05', Argentina_cif: 438795839.999999, Brazil_cif: 4053433875, USA_cif: 62484173},
-            {refMonth: '2025-06', Argentina_cif: 354424554.0, Brazil_cif: 4113040268, USA_cif: 0},
-            {refMonth: '2025-07', Argentina_cif: 197273317.619805, Brazil_cif: 3885074229, USA_cif: 0},
-            {refMonth: '2025-08', Argentina_cif: 66265125.1679437, Brazil_cif: 3295925613, USA_cif: 0},
-            {refMonth: '2025-09', Argentina_cif: 12327552.4521728, Brazil_cif: 2864739717, USA_cif: 0},
-            {refMonth: '2025-10', Argentina_cif: 1253773.14021549, Brazil_cif: 2651925049, USA_cif: 0}
-        ];
-
-        const months = data.map(d => d.refMonth);
-        const total = data.map(d => d.Argentina_cif + d.Brazil_cif + d.USA_cif);
+        const jsonUrl = '../data/processed/Q1.1.soybean_imports_quantity_price.json';
+        fetch(jsonUrl).then(function(resp){return resp.json();}).then(function(data){
+        var startDate = new Date('2024-01-01');
+        var filtered = data.filter(function(d){
+            var s = d.refMonth;
+            var dt = new Date((typeof s === 'string' && s.length === 7) ? (s + '-01') : s);
+            return dt >= startDate;
+        });
+        const months = filtered.map(function(d){return d.refMonth;});
+        const total = filtered.map(function(d){return d.Argentina_cif + d.Brazil_cif + d.USA_cif;});
         const gradientOption = {
             color: ['#5470C6', '#91CC75', '#FAC858'],
             title: {
@@ -73,7 +56,7 @@
                         ])
                     },
                     emphasis: { focus: 'series' },
-                    data: data.map((d, i) => total[i] > 0 ? Number(((d.Argentina_cif / total[i]) * 100).toFixed(2)) : 0)
+                    data: filtered.map(function(d, i){return total[i] > 0 ? Number(((d.Argentina_cif / total[i]) * 100).toFixed(2)) : 0;})
                 },
                 {
                     name: 'Brazil',
@@ -90,7 +73,7 @@
                         ])
                     },
                     emphasis: { focus: 'series' },
-                    data: data.map((d, i) => total[i] > 0 ? Number(((d.Brazil_cif / total[i]) * 100).toFixed(2)) : 0)
+                    data: filtered.map(function(d, i){return total[i] > 0 ? Number(((d.Brazil_cif / total[i]) * 100).toFixed(2)) : 0;})
                 },
                 {
                     name: 'USA',
@@ -107,11 +90,12 @@
                         ])
                     },
                     emphasis: { focus: 'series' },
-                    data: data.map((d, i) => total[i] > 0 ? Number(((d.USA_cif / total[i]) * 100).toFixed(2)) : 0)
+                    data: filtered.map(function(d, i){return total[i] > 0 ? Number(((d.USA_cif / total[i]) * 100).toFixed(2)) : 0;})
                 }
             ]
         };
         chart.setOption(gradientOption);
+        }).catch(function(err){console.error(err);});
     </script>
 </body>
 </html>

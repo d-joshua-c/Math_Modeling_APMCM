@@ -1,0 +1,68 @@
+\section{Fiscal Analysis: Dynamic Tariff Revenue Forecast}
+
+\subsection{Theoretical Framework: The Dynamic Laffer Effect}
+The relationship between tariff rates and fiscal revenue is governed by the Laffer Curve mechanism. However, trade volume does not react instantaneously to tariff shocks. We propose a \textbf{Dynamic Response Model} that distinguishes between short-term rigidity (contractual obligations) and medium-term elasticity (supply chain substitution).
+
+The tariff revenue $R_t$ at time $t$ is defined as:
+\begin{equation}
+    R_t = V_t(\tau) \times \tau_t
+\end{equation}
+where $V_t(\tau)$ is the trade volume under tariff rate $\tau_t$. The core challenge is to model the time-varying decay of $V_t$.
+
+\subsection{Baseline Prediction: SARIMA Model}
+To establish a counterfactual baseline (imports without new tariffs), we employed the Seasonal AutoRegressive Integrated Moving Average (SARIMA) model on historical U.S. total imports data (IMPTOTUS, 2008-2025).
+
+\subsubsection{Data Preprocessing and Stationarity}
+We performed the Augmented Dickey-Fuller (ADF) test on the logarithmic series of imports. The result (ADF Statistic: -1.8067, p-value: 0.377) indicated non-stationarity, necessitating first-order differencing ($d=1$) and seasonal differencing ($D=1$, $s=12$).
+
+\subsubsection{Model Selection}
+Through a grid search based on the Akaike Information Criterion (AIC), the optimal model structure was identified as $\text{SARIMA}(2, 1, 2) \times (1, 1, 1)_{12}$. The baseline forecast for the next 48 months is shown in Figure \ref{fig:baseline}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/Q4.the_imports_without_tariff.png} % 替换为你的第一张图
+    \caption{Baseline Forecast of U.S. Goods Imports (No-Tariff Scenario) with Confidence Intervals.}
+    \label{fig:baseline}
+\end{figure}
+
+\subsection{Impact Assessment: Polynomial Elasticity Fitting}
+Unlike static models, we calibrated the trade elasticity $\epsilon_t$ using empirical data from the 2018-2019 Trade War.
+
+\subsubsection{Elasticity Extraction}
+We calculated the realized elasticity for each month during the 2018 trade conflict:
+\begin{equation}
+    \epsilon_{real} = \frac{\%\Delta \text{Import}}{\%\Delta \text{Tariff}}
+\end{equation}
+To capture the nonlinear adjustment path, we fitted a 5th-degree polynomial to the observed elasticity sequence (see Figure \ref{fig:elasticity}).
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{figures/Q4.using_polynomial_to_simulate_elasticity.png} % 替换为你的第二张图 (多项式拟合)
+    \caption{Polynomial Fitting of U.S. Import Trade Elasticity based on 2018-2019 Empirical Data.}
+    \label{fig:elasticity}
+\end{figure}
+
+The fitted polynomial captures the initial rigidity (low elasticity) and the subsequent structural adjustment (higher negative elasticity).
+
+\subsection{Revenue Forecast under Tariff Shock}
+We simulated the import volume $V_{shock}$ under the proposed reciprocal tariff policy ($\tau_{new} \approx 18\%$). The shock transmission is modeled as:
+\begin{equation}
+    V_{shock}(t) = V_{base}(t) \times [1 + \epsilon(t) \cdot \Delta \tau]
+\end{equation}
+where $\epsilon(t)$ incorporates the polynomial trend, Gaussian noise ($\sigma=0.09$), and a long-term decay factor to prevent divergence.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{figures/Q4.tariff_shock.png} % 替换为你的第三张图 (红蓝对比)
+    \caption{Comparison of Import Volumes: Baseline vs. Tariff Shock Scenario. The red line demonstrates the contraction of the tax base over time.}
+    \label{fig:shock}
+\end{figure}
+
+\subsubsection{Net Revenue Change}
+The simulation results (Figure \ref{fig:shock}) indicate a \textbf{"Short-term Gain, Long-term Pain"} trajectory:
+\begin{itemize}
+    \item \textbf{Phase 1 (Months 1-12):} Revenue rises significantly as trade volume remains rigid despite higher taxes.
+    \item \textbf{Phase 2 (Months 13-48):} The contraction in the tax base (import volume) accelerates, partially offsetting the gains from higher rates, consistent with the downward slope of the Laffer Curve.
+\end{itemize}
+
+\textbf{Conclusion:} While the tariff hike generates an initial fiscal surplus, the erosion of the tax base suggests that the net revenue growth will diminish over the President's term.

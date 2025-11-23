@@ -11,45 +11,27 @@
     <script type="text/javascript">
         var myChart = echarts.init(document.getElementById('main'));
 
-        // Data from the CSV file will be processed and put here.
-        // Let's define a sample structure for now.
-        const data = [
-            {refMonth: '2024-01', Argentina: 6873785.27515069, Brazil: 1962054000, USA: 3816779590.0, Argentina_cif: 3374784.2288212, Brazil_cif: 1003079398, USA_cif: 2032659060},
-            {refMonth: '2024-02', Argentina: 8198832.89787444, Brazil: 4901600039, USA: 3253816909.0, Argentina_cif: 3940208.89175099, Brazil_cif: 2167085063, USA_cif: 1686940270},
-            {refMonth: '2024-03', Argentina: 22888459.6991667, Brazil: 9016105030, USA: 1767685543.0, Argentina_cif: 10758562.4542694, Brazil_cif: 3814402261, USA_cif: 889516632},
-            {refMonth: '2024-04', Argentina: 164999999.999999, Brazil: 9838487010, USA: 533036372.7, Argentina_cif: 75156509.9999998, Brazil_cif: 4208922805, USA_cif: 290372611},
-            {refMonth: '2024-05', Argentina: 1389999999.99999, Brazil: 9988298063, USA: 290753194.5, Argentina_cif: 612257469.999999, Brazil_cif: 4276186531, USA_cif: 157998991},
-            {refMonth: '2024-06', Argentina: 1349999999.99999, Brazil: 10621320084, USA: 22104304.6, Argentina_cif: 589512599.999997, Brazil_cif: 4669990440, USA_cif: 12096915},
-            {refMonth: '2024-07', Argentina: 335000000.0, Brazil: 8921288000, USA: 24026514.61, Argentina_cif: 142351215.0, Brazil_cif: 3921886966, USA_cif: 11109325},
-            {refMonth: '2024-08', Argentina: 416000000.0, Brazil: 5922101000, USA: 291428485.7, Argentina_cif: 165192352.0, Brazil_cif: 2569489311, USA_cif: 135676575},
-            {refMonth: '2024-09', Argentina: 266000000.0, Brazil: 4315064366, USA: 988857391.3, Argentina_cif: 109682440.0, Brazil_cif: 1815730555, USA_cif: 457465973},
-            {refMonth: '2024-10', Argentina: 178231732.712295, Brazil: 3545968000, USA: 5769740395.0, Argentina_cif: 76603962.7998131, Brazil_cif: 1515953295, USA_cif: 2668039747},
-            {refMonth: '2024-11', Argentina: 169847785.288737, Brazil: 2152970003, USA: 5771826229.0, Argentina_cif: 74280441.3794021, Brazil_cif: 919272757, USA_cif: 2668939452},
-            {refMonth: '2024-12', Argentina: 210165483.302769, Brazil: 1682481078, USA: 3785983414.0, Argentina_cif: 91774599.6752133, Brazil_cif: 617888329, USA_cif: 1750554372},
-            {refMonth: '2025-01', Argentina: 310408737.026611, Brazil: 808773000, USA: 1621818151.0, Argentina_cif: 133506692.107957, Brazil_cif: 323952013, USA_cif: 749892576},
-            {refMonth: '2025-02', Argentina: 493038737.821136, Brazil: 5029647000, USA: 1327122050.0, Argentina_cif: 207017362.63385, Brazil_cif: 1985952505, USA_cif: 613631665},
-            {refMonth: '2025-03', Argentina: 732840161.430206, Brazil: 11140739000, USA: 1755389918.0, Argentina_cif: 300098367.328481, Brazil_cif: 4313221073, USA_cif: 811653185},
-            {refMonth: '2025-04', Argentina: 1011066856.85533, Brazil: 10759099000, USA: 487321538.5, Argentina_cif: 403341697.870849, Brazil_cif: 4126925834, USA_cif: 225326621},
-            {refMonth: '2025-05', Argentina: 1119999999.99999, Brazil: 10378125458, USA: 135136643.8, Argentina_cif: 438795839.999999, Brazil_cif: 4053433875, USA_cif: 62484173},
-            {refMonth: '2025-06', Argentina: 909000000.000001, Brazil: 10350542033, USA: 0.0, Argentina_cif: 354424554.0, Brazil_cif: 4113040268, USA_cif: 0},
-            {refMonth: '2025-07', Argentina: 498621818.038706, Brazil: 9566859301, USA: 0.0, Argentina_cif: 197273317.619805, Brazil_cif: 3885074229, USA_cif: 0},
-            {refMonth: '2025-08', Argentina: 160965078.628628, Brazil: 7982386000, USA: 0.0, Argentina_cif: 66265125.1679437, Brazil_cif: 3295925613, USA_cif: 0},
-            {refMonth: '2025-09', Argentina: 27995186.7975688, Brazil: 6806542000, USA: 0.0, Argentina_cif: 12327552.4521728, Brazil_cif: 2864739717, USA_cif: 0},
-            {refMonth: '2025-10', Argentina: 2599228.05560953, Brazil: 6340589026, USA: 0.0, Argentina_cif: 1253773.14021549, Brazil_cif: 2651925049, USA_cif: 0}
-        ];
+        const jsonUrl = '../data/processed/Q1.1.soybean_imports_quantity_price.json';
+        fetch(jsonUrl).then(function(resp){return resp.json();}).then(function(data){
+        var startDate = new Date('2024-01-01');
+        var filtered = data.filter(function(item){
+            var s = item.refMonth;
+            var dt = new Date((typeof s === 'string' && s.length === 7) ? (s + '-01') : s);
+            return dt >= startDate;
+        });
 
-        const months = data.map(item => item.refMonth);
-        const argentinaData = data.map(item => item.Argentina);
-        const brazilData = data.map(item => item.Brazil);
-        const usaData = data.map(item => item.USA);
+        const months = filtered.map(function(item){return item.refMonth;});
+        const argentinaData = filtered.map(function(item){return item.Argentina;});
+        const brazilData = filtered.map(function(item){return item.Brazil;});
+        const usaData = filtered.map(function(item){return item.USA;});
 
-        const totalQuantities = data.map((item, i) => item.Argentina + item.Brazil + item.USA);
-        const totalCif = data.map((item, i) => item.Argentina_cif + item.Brazil_cif + item.USA_cif);
+        const totalQuantities = filtered.map(function(item){return item.Argentina + item.Brazil + item.USA;});
+        const totalCif = filtered.map(function(item){return item.Argentina_cif + item.Brazil_cif + item.USA_cif;});
 
-        const unitPrice = totalCif.map((cif, i) => totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0);
-        const argentinaUnitPrice = data.map(item => item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : null);
-        const brazilUnitPrice = data.map(item => item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : null);
-        const usaUnitPrice = data.map(item => item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : null);
+        const unitPrice = totalCif.map(function(cif, i){return totalQuantities[i] > 0 ? (cif / totalQuantities[i]) * 1000 : 0;});
+        const argentinaUnitPrice = filtered.map(function(item){return item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : null;});
+        const brazilUnitPrice = filtered.map(function(item){return item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : null;});
+        const usaUnitPrice = filtered.map(function(item){return item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : null;});
         // const weightedAvgUnitPrice = data.map(item => {
         //     const tc = item.Argentina_cif + item.Brazil_cif + item.USA_cif;
         //     if (tc > 0) {
@@ -223,6 +205,7 @@
         };
 
         myChart.setOption(option);
+        }).catch(function(err){console.error(err);});
     </script>
 </body>
 </html>
