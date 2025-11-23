@@ -11,52 +11,6 @@
 
     <script>
         const chart = echarts.init(document.getElementById('chart'));
-        const option = {
-            toolbox: {
-                feature: {
-                    dataView: {show: true, readOnly: false},
-                    magicType: {show: true, type: ['line', 'bar']},
-                    restore: {show: true},
-                    saveAsImage: {show: true, name: 'Q1.1.china_soybean_import_share_stacked_area_chart'}
-                }
-            },
-            title: {
-                text: 'Top 3 Soybean Import Share (2024-01 to 2025-05)',
-                left: 'center'
-            },
-            tooltip: {
-                trigger: 'axis',
-                axisPointer: {
-                    type: 'cross',
-                    label: {
-                        backgroundColor: '#6a7985'
-                    }
-                }
-            },
-            legend: {
-                data: [],
-                top: 30
-            },
-            grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-            },
-            xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: []
-            },
-            yAxis: {
-                type: 'value',
-                axisLabel: {
-                    formatter: '{value} %'
-                }
-            },
-            series: []
-        };
-        chart.setOption(option);
 
         const data = [
             {refMonth: '2024-01', Argentina_cif: 3374784.2288212, Brazil_cif: 1003079398, USA_cif: 2032659060},
@@ -85,38 +39,79 @@
 
         const months = data.map(d => d.refMonth);
         const total = data.map(d => d.Argentina_cif + d.Brazil_cif + d.USA_cif);
-        const series = [
-            {
-                name: 'Argentina',
-                type: 'line',
-                stack: 'total',
-                areaStyle: {},
-                emphasis: { focus: 'series' },
-                data: data.map((d, i) => total[i] > 0 ? (d.Argentina_cif / total[i] * 100).toFixed(2) : 0)
+        const gradientOption = {
+            color: ['#5470C6', '#91CC75', '#FAC858'],
+            title: {
+                text: 'Gradient Stacked Area Chart: Top 3 Soybean Import Share (2024-01 to 2025-10)',
+                left: 'center'
             },
-            {
-                name: 'Brazil',
-                type: 'line',
-                stack: 'total',
-                areaStyle: {},
-                emphasis: { focus: 'series' },
-                data: data.map((d, i) => total[i] > 0 ? (d.Brazil_cif / total[i] * 100).toFixed(2) : 0)
+            tooltip: {
+                trigger: 'axis',
+                axisPointer: {
+                    type: 'cross',
+                    label: { backgroundColor: '#6a7985' }
+                }
             },
-            {
-                name: 'USA',
-                type: 'line',
-                stack: 'total',
-                areaStyle: {},
-                emphasis: { focus: 'series' },
-                data: data.map((d, i) => total[i] > 0 ? (d.USA_cif / total[i] * 100).toFixed(2) : 0)
-            }
-        ];
-
-        chart.setOption({
-            legend: { data: ['Argentina', 'Brazil', 'USA'] },
-            xAxis: { data: months },
-            series: series
-        });
+            legend: { data: ['Argentina', 'Brazil', 'USA'], top: 30 },
+            toolbox: { feature: { saveAsImage: { name: 'Q1.1.china_soybean_import_share_stacked_area_chart' } } },
+            grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+            xAxis: [{ type: 'category', boundaryGap: false, data: months }],
+            yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value} %' } }],
+            series: [
+                {
+                    name: 'Argentina',
+                    type: 'line',
+                    stack: 'Total',
+                    smooth: true,
+                    lineStyle: { width: 0 },
+                    showSymbol: false,
+                    areaStyle: {
+                        opacity: 0.95,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#5A77C8' },
+                            { offset: 1, color: '#5470C6' }
+                        ])
+                    },
+                    emphasis: { focus: 'series' },
+                    data: data.map((d, i) => total[i] > 0 ? Number(((d.Argentina_cif / total[i]) * 100).toFixed(2)) : 0)
+                },
+                {
+                    name: 'Brazil',
+                    type: 'line',
+                    stack: 'Total',
+                    smooth: true,
+                    lineStyle: { width: 0 },
+                    showSymbol: false,
+                    areaStyle: {
+                        opacity: 0.95,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#86C57B' },
+                            { offset: 1, color: '#91CC75' }
+                        ])
+                    },
+                    emphasis: { focus: 'series' },
+                    data: data.map((d, i) => total[i] > 0 ? Number(((d.Brazil_cif / total[i]) * 100).toFixed(2)) : 0)
+                },
+                {
+                    name: 'USA',
+                    type: 'line',
+                    stack: 'Total',
+                    smooth: true,
+                    lineStyle: { width: 0 },
+                    showSymbol: false,
+                    areaStyle: {
+                        opacity: 0.95,
+                        color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                            { offset: 0, color: '#F5BD4D' },
+                            { offset: 1, color: '#FAC858' }
+                        ])
+                    },
+                    emphasis: { focus: 'series' },
+                    data: data.map((d, i) => total[i] > 0 ? Number(((d.USA_cif / total[i]) * 100).toFixed(2)) : 0)
+                }
+            ]
+        };
+        chart.setOption(gradientOption);
     </script>
 </body>
 </html>
