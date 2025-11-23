@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trade Effect Linear Regression</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .box { border: 1px solid #ccc; border-radius: 8px; padding: 10px; }
+        .title { text-align: center; font-weight: 600; margin-bottom: 8px; }
+        .chart { width: 100%; height: 420px; }
+        @media (max-width: 1200px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="grid">
+        <div class="box">
+            <div class="title">Predicted Exports (Quantity, 10k)</div>
+            <div id="chart-qty" class="chart"></div>
+        </div>
+        <div class="box">
+            <div class="title">Predicted Exports (Value, USD)</div>
+            <div id="chart-val" class="chart"></div>
+        </div>
+    </div>
+    <script>
+        function makeBarOption(countries, pre, post, yName) {
+            return {
+                tooltip: { show: false },
+                toolbox: { feature: { saveAsImage: { show: true, name: 'trade_effect_lr' } } },
+                legend: { data: ['Pre (2024)', 'Post (2025)'], top: 0 },
+                xAxis: { type: 'category', data: countries },
+                yAxis: { type: 'value', name: yName },
+                series: [
+                    { name: 'Pre (2024)', type: 'bar', data: pre, itemStyle: { color: '#5470C6' } },
+                    { name: 'Post (2025)', type: 'bar', data: post, itemStyle: { color: '#EE6666' } }
+                ]
+            };
+        }
+        function init() {
+            var elQty = echarts.init(document.getElementById('chart-qty'));
+            var elVal = echarts.init(document.getElementById('chart-val'));
+            fetch('../data/processed/Q1.trade_effect_pred_pre_post.json').then(function(r){return r.json();}).then(function(data){
+                var countries = data.map(function(d){return d.country;});
+                var preQ = data.map(function(d){return d.pre_pred_wtqty;});
+                var postQ = data.map(function(d){return d.post_pred_wtqty;});
+                var preV = data.map(function(d){return d.pre_pred_value;});
+                var postV = data.map(function(d){return d.post_pred_value;});
+                elQty.setOption(makeBarOption(countries, preQ, postQ, 'Quantity (10k)'));
+                elVal.setOption(makeBarOption(countries, preV, postV, 'Value (USD)'));
+            }).catch(function(err){console.error(err);});
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

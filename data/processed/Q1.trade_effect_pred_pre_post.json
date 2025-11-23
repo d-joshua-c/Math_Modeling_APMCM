@@ -1,0 +1,35 @@
+[
+  {
+    "country": "Argentina",
+    "pre_pred_wtqty": 84.37700996227707,
+    "post_pred_wtqty": 896.2336245429378,
+    "pre_pred_value": 910936253.9029561,
+    "post_pred_value": 3170404943.6975517,
+    "pre_actual_wtqty": 451.196804522,
+    "post_actual_wtqty": 525.89913538,
+    "pre_actual_value": 1954885146.431,
+    "post_actual_value": 2114304282.26
+  },
+  {
+    "country": "Brazil",
+    "pre_pred_wtqty": 7727.485513770156,
+    "post_pred_wtqty": 7456.756085723425,
+    "pre_pred_value": 32641788418.336945,
+    "post_pred_value": 30407031281.455647,
+    "pre_actual_wtqty": 7286.7736669,
+    "post_actual_wtqty": 7916.3301817,
+    "pre_actual_value": 31499887711.0,
+    "post_actual_value": 31614190176.0
+  },
+  {
+    "country": "USA",
+    "pre_pred_wtqty": 2758.2496581872297,
+    "post_pred_wtqty": 426.35469300610464,
+    "pre_pred_value": 13169968125.362482,
+    "post_pred_value": 2124696359.3187463,
+    "pre_actual_wtqty": 2631.603834341,
+    "post_actual_wtqty": 532.67883013,
+    "pre_actual_value": 12761369923.0,
+    "post_actual_value": 2462988220.0
+  }
+]
