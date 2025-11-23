@@ -50,16 +50,16 @@
         const argentinaUnitPrice = data.map(item => item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : null);
         const brazilUnitPrice = data.map(item => item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : null);
         const usaUnitPrice = data.map(item => item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : null);
-        const weightedAvgUnitPrice = data.map(item => {
-            const tc = item.Argentina_cif + item.Brazil_cif + item.USA_cif;
-            if (tc > 0) {
-                const pA = item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : 0;
-                const pB = item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : 0;
-                const pU = item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : 0;
-                return (pA * item.Argentina_cif + pB * item.Brazil_cif + pU * item.USA_cif) / tc;
-            }
-            return null;
-        });
+        // const weightedAvgUnitPrice = data.map(item => {
+        //     const tc = item.Argentina_cif + item.Brazil_cif + item.USA_cif;
+        //     if (tc > 0) {
+        //         const pA = item.Argentina > 0 ? (item.Argentina_cif / item.Argentina) * 1000 : 0;
+        //         const pB = item.Brazil > 0 ? (item.Brazil_cif / item.Brazil) * 1000 : 0;
+        //         const pU = item.USA > 0 ? (item.USA_cif / item.USA) * 1000 : 0;
+        //         return (pA * item.Argentina_cif + pB * item.Brazil_cif + pU * item.USA_cif) / tc;
+        //     }
+        //     return null;
+        // });
 
 
 
@@ -82,7 +82,8 @@
                 }
             },
             legend: {
-                data: ['Argentina', 'Brazil', 'USA', 'Unit Price', 'Argentina Unit Price', 'Brazil Unit Price', 'USA Unit Price', 'Weighted Avg Unit Price']
+                // data: ['Argentina', 'Brazil', 'USA', 'Unit Price', 'Argentina Unit Price', 'Brazil Unit Price', 'USA Unit Price', 'Weighted Avg Unit Price']
+                data: ['Argentina', 'Brazil', 'USA', 'Unit Price', 'Argentina Unit Price', 'Brazil Unit Price', 'USA Unit Price']
             },
             xAxis: [
                 {
@@ -206,18 +207,18 @@
                     },
                     data: usaUnitPrice
                 },
-                {
-                    name: 'Weighted Avg Unit Price',
-                    type: 'line',
-                    yAxisIndex: 1,
-                    lineStyle: { color: '#c23531' },
-                    tooltip: {
-                        valueFormatter: function (value) {
-                            return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
-                        }
-                    },
-                    data: weightedAvgUnitPrice
-                }
+                // {
+                //     name: 'Weighted Avg Unit Price',
+                //     type: 'line',
+                //     yAxisIndex: 1,
+                //     lineStyle: { color: '#c23531' },
+                //     tooltip: {
+                //         valueFormatter: function (value) {
+                //             return '$' + (value == null ? 0 : value.toFixed(2)) + ' / ton';
+                //         }
+                //     },
+                //     data: weightedAvgUnitPrice
+                // }
             ]
         };
 

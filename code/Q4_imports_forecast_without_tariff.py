@@ -1,100 +1,29 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from pathlib import Path
 from argparse import ArgumentParser
-from statsmodels.tsa.statespace.sarimax import SARIMAX
 from statsmodels.tsa.stattools import adfuller
-import warnings
-from statsmodels.tools.sm_exceptions import ConvergenceWarning
+import sys
+
+# 使同级模块可导入（将 code 目录加入路径）
+sys.path.append(str(Path(__file__).resolve().parent))
+
+# 引入模块化函数
+from code.q4mod.io import load_data
+from code.q4mod.modeling import choose_sarima, forecast
+from code.q4mod.plotting import plot_forecast
 
 
-def load_data(csv_path: Path) -> pd.Series:
-    # 读取IMPTOTUS数据，筛选到2025-04（关税前）
-    df = pd.read_csv(csv_path)
-    df['observation_date'] = pd.to_datetime(df['observation_date'])
-    df = df.sort_values('observation_date')
-    df = df[df['observation_date'] <= pd.Timestamp('2025-04-01')]
-    df = df.set_index('observation_date').asfreq('MS')
-    y = df['IMPTOTUS'].astype(float)
-    return y
+# 加载函数已移至 q4mod.io
 
 
-def choose_sarima(y_log: pd.Series):
-    # 简单网格搜索选择SARIMA(p,1,q)(P,1,Q,12)（月度季节性）
-    p_vals = [0, 1, 2]
-    q_vals = [0, 1, 2]
-    P_vals = [0, 1, 2]
-    Q_vals = [0, 1]
-    best_aic = np.inf
-    best_cfg = None
-    best_model = None
-    warnings.simplefilter("ignore", ConvergenceWarning)
-    for p in p_vals:
-        for q in q_vals:
-            for P in P_vals:
-                for Q in Q_vals:
-                    try:
-                        model = SARIMAX(
-                            y_log,
-                            order=(p, 1, q),
-                            seasonal_order=(P, 1, Q, 12),
-                            enforce_stationarity=False,
-                            enforce_invertibility=False,
-                        )
-                        res = model.fit(disp=False, maxiter=200, method='lbfgs')
-                        ret = getattr(res, 'mle_retvals', {})
-                        if not ret.get('converged', True):
-                            continue
-                        if res.aic < best_aic:
-                            best_aic = res.aic
-                            best_cfg = (p, 1, q, P, 1, Q, 12)
-                            best_model = res
-                    except Exception:
-                        pass
-    return best_cfg, best_model, best_aic
+# 模型选择函数已移至 q4mod.modeling
 
 
-def forecast_48(y: pd.Series, best_model) -> pd.DataFrame:
-    # 未来48个月预测（log尺度→反对数回到原尺度），包含多层次置信区间（50/80/95）
-    h = 48
-    fc_res = best_model.get_forecast(steps=h)
-    pred_log = fc_res.predicted_mean
-    pred = np.exp(pred_log)
-
-    # 生成多置信水平的区间（alpha越小，区间越宽）
-    ci50_log = fc_res.conf_int(alpha=0.5)
-    ci80_log = fc_res.conf_int(alpha=0.2)
-    ci95_log = fc_res.conf_int(alpha=0.05)
-
-    out = pd.DataFrame({'pred': np.exp(pred_log)})
-    out['lower_50'] = np.exp(ci50_log.iloc[:, 0])
-    out['upper_50'] = np.exp(ci50_log.iloc[:, 1])
-    out['lower_80'] = np.exp(ci80_log.iloc[:, 0])
-    out['upper_80'] = np.exp(ci80_log.iloc[:, 1])
-    out['lower_95'] = np.exp(ci95_log.iloc[:, 0])
-    out['upper_95'] = np.exp(ci95_log.iloc[:, 1])
-
-    return out
+# 预测函数已移至 q4mod.modeling
 
 
-def plot_result(y: pd.Series, fc_df: pd.DataFrame):
-    # 可视化历史与预测（多层次置信区间渐变显示）
-    plt.figure(figsize=(10, 5))
-    plt.plot(y.index, y, label='Historical Imports (million USD)')
-    plt.plot(fc_df.index, fc_df['pred'], label='Forecast', color='red')
-
-    # 渐变：内层更深、外层更浅（红系）
-    plt.fill_between(fc_df.index, fc_df['lower_50'], fc_df['upper_50'], color='#d62728', alpha=0.35, label='Confidence 50%')
-    plt.fill_between(fc_df.index, fc_df['lower_80'], fc_df['upper_80'], color='#ff7f0e', alpha=0.25, label='Confidence 80%')
-    plt.fill_between(fc_df.index, fc_df['lower_95'], fc_df['upper_95'], color='#ff9896', alpha=0.18, label='Confidence 95%')
-
-    plt.title('US Goods Imports: Time Series Forecast (using data up to 2025-04)')
-    plt.xlabel('Month')
-    plt.ylabel('Million USD')
-    plt.legend()
-    plt.grid(True)
-    plt.show()
+# 绘图函数已移至 q4mod.plotting
 
 
 def main():
@@ -121,7 +50,7 @@ def main():
     best_cfg, best_model, best_aic = choose_sarima(y_log)
     print(f'最佳模型: {best_cfg}  AIC: {best_aic:.2f}')
 
-    fc_df = forecast_48(y, best_model)
+    fc_df = forecast(best_model, steps=48)
     print('预测前5条:')
     print(fc_df.head())
 
@@ -132,7 +61,9 @@ def main():
     out_path = out_dir / 'Q4_IMPTOTUS_forecast_without_tariff_48m.csv'
     fc_df.to_csv(out_path)
 
-    plot_result(y, fc_df)
+    # 绘图：英文，自动关闭5秒，文件名前缀使用程序名
+    img_path = Path(__file__).with_suffix('.png')
+    plot_forecast(y, fc_df, auto_close=True, save_path=img_path)
 
 
 if __name__ == '__main__':
