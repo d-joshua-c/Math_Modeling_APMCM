@@ -1,0 +1,23 @@
+[
+  {
+    "country": "Argentina",
+    "pre_market_share": 4.356913948453283,
+    "post_market_share": 5.867573285470706,
+    "pre_score": 0.1600851916560315,
+    "post_score": 0.0863455452329545
+  },
+  {
+    "country": "Brazil",
+    "pre_market_share": 70.2664846931276,
+    "post_market_share": 88.19772468393701,
+    "pre_score": 0.780856008976012,
+    "post_score": 0.9999999999972619
+  },
+  {
+    "country": "USA",
+    "pre_market_share": 25.37660135841911,
+    "post_market_share": 5.934702030592278,
+    "pre_score": 0.3927636120922694,
+    "post_score": 0.0056346014816809524
+  }
+]

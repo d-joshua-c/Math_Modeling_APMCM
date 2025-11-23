@@ -1,0 +1,30 @@
+[
+  {
+    "indicator": "total_volume",
+    "weight": 0.19275694444982386
+  },
+  {
+    "indicator": "total_value",
+    "weight": 0.18663582383408645
+  },
+  {
+    "indicator": "avg_monthly_volume",
+    "weight": 0.1876242804588257
+  },
+  {
+    "indicator": "market_share",
+    "weight": 0.18833374546791465
+  },
+  {
+    "indicator": "avg_unit_price",
+    "weight": 0.0687260747633784
+  },
+  {
+    "indicator": "stability",
+    "weight": 0.10619761906772072
+  },
+  {
+    "indicator": "trend_coef",
+    "weight": 0.06972551195824998
+  }
+]

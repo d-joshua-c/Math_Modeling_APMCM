@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entropy + TOPSIS Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; }
+        .box { border: 1px solid #ccc; border-radius: 8px; padding: 10px; }
+        .title { text-align: center; font-weight: 600; margin-bottom: 8px; }
+        .chart { width: 50%; height: 420px; }
+        @media (max-width: 1200px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+    <script>
+        function makeWeightsOption(indicators, weights) {
+            return {
+                tooltip: { show: false },
+                toolbox: { feature: { saveAsImage: { show: true, name: 'indicator_weights' } } },
+                xAxis: { type: 'category', data: indicators },
+                yAxis: { type: 'value', name: 'Weight' },
+                series: [{ type: 'bar', data: weights, itemStyle: { color: '#5470C6' } }]
+            };
+        }
+        function makeScoresOption(countries, pre, post) {
+            return {
+                tooltip: { show: false },
+                toolbox: { feature: { saveAsImage: { show: true, name: 'topsis_scores_pre_post' } } },
+                xAxis: { type: 'category', data: countries },
+                yAxis: { type: 'value', name: 'TOPSIS Score' },
+                series: [
+                    { name: 'Pre (2024)', type: 'bar', data: pre, itemStyle: { color: '#5470C6' } },
+                    { name: 'Post (2025)', type: 'bar', data: post, itemStyle: { color: '#EE6666' } }
+                ],
+                legend: { data: ['Pre (2024)', 'Post (2025)'], top: 0 }
+            };
+        }
+        function makeCombinedOption(countries, preMS, postMS, preScore, postScore) {
+            return {
+                tooltip: { show: false },
+                toolbox: { feature: { saveAsImage: { show: true, name: 'market_share_and_scores' } } },
+                xAxis: { type: 'category', data: countries },
+                yAxis: [
+                    { type: 'value', name: 'Market Share (%)', min: 0, max: 100 },
+                    { type: 'value', name: 'TOPSIS Score' }
+                ],
+                legend: { data: ['Pre MS', 'Post MS', 'Pre Score', 'Post Score'], top: 0 },
+                series: [
+                    { name: 'Pre MS', type: 'bar', data: preMS, itemStyle: { color: '#91CC75' } },
+                    { name: 'Post MS', type: 'bar', data: postMS, itemStyle: { color: '#FAC858' } },
+                    { name: 'Pre Score', type: 'line', data: preScore, yAxisIndex: 1, itemStyle: { color: '#5470C6' } },
+                    { name: 'Post Score', type: 'line', data: postScore, yAxisIndex: 1, itemStyle: { color: '#EE6666' } }
+                ]
+            };
+        }
+        function makeRadarOption(indicators, items) {
+            return {
+                toolbox: { feature: { saveAsImage: { show: true, name: 'multidimensional_radar' } } },
+                legend: { top: 0 },
+                radar: { indicator: indicators.map(function(n){ return { name: n, max: 1 } }) },
+                series: [{
+                    type: 'radar',
+                    data: items.flatMap(function(d){
+                        return [
+                            { value: d.pre, name: d.country + ' (Pre)', lineStyle: { type: 'solid' } },
+                            { value: d.post, name: d.country + ' (Post)', lineStyle: { type: 'dashed' } }
+                        ];
+                    })
+                }]
+            };
+        }
+        function init() {
+            var elWeights = echarts.init(document.getElementById('chart-weights'));
+            var elScores = echarts.init(document.getElementById('chart-scores'));
+            var elCombined = echarts.init(document.getElementById('chart-combined'));
+            var elRadar = echarts.init(document.getElementById('chart-radar'));
+
+            var base = '../data/processed/';
+            Promise.all([
+                fetch(base + 'Q1.topsis_entropy_weights.json').then(function(r){return r.json();}),
+                fetch(base + 'Q1.topsis_scores_pre_post.json').then(function(r){return r.json();}),
+                fetch(base + 'Q1.market_share_and_scores.json').then(function(r){return r.json();}),
+                fetch(base + 'Q1.multidimensional_radar.json').then(function(r){return r.json();})
+            ]).then(function(arr){
+                var weightsData = arr[0];
+                var scoresData = arr[1];
+                var msScoresData = arr[2];
+                var radarData = arr[3];
+
+                var indicators = weightsData.map(function(d){return d.indicator;});
+                var weights = weightsData.map(function(d){return d.weight;});
+                elWeights.setOption(makeWeightsOption(indicators, weights));
+
+                var countries = scoresData.map(function(d){return d.country;});
+                var pre = scoresData.map(function(d){return d.pre;});
+                var post = scoresData.map(function(d){return d.post;});
+                elScores.setOption(makeScoresOption(countries, pre, post));
+
+                var countries2 = msScoresData.map(function(d){return d.country;});
+                var preMS = msScoresData.map(function(d){return d.pre_market_share;});
+                var postMS = msScoresData.map(function(d){return d.post_market_share;});
+                var preScore = msScoresData.map(function(d){return d.pre_score;});
+                var postScore = msScoresData.map(function(d){return d.post_score;});
+                elCombined.setOption(makeCombinedOption(countries2, preMS, postMS, preScore, postScore));
+
+                var radarIndicators = radarData.indicators;
+                var radarItems = radarData.data;
+                elRadar.setOption(makeRadarOption(radarIndicators, radarItems));
+            }).catch(function(err){console.error(err);});
+        }
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</head>
+<body>
+    <div class="grid">
+        <div class="box">
+            <div class="title">Indicator Weights (Entropy)</div>
+            <div id="chart-weights" class="chart"></div>
+        </div>
+        <div class="box">
+            <div class="title">TOPSIS Scores: Pre vs Post</div>
+            <div id="chart-scores" class="chart"></div>
+        </div>
+        <div class="box">
+            <div class="title">Market Share and Score Change</div>
+            <div id="chart-combined" class="chart"></div>
+        </div>
+        <div class="box">
+            <div class="title">Multi-dimensional Indicator Radar</div>
+            <div id="chart-radar" class="chart"></div>
+        </div>
+    </div>
+</body>
+</html>
