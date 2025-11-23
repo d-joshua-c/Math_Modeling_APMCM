@@ -1,0 +1,290 @@
+[
+  {
+    "refMonth": "2024-01",
+    "Argentina_cif": 174003058.30441168,
+    "Brazil_cif": 2653417361.885376,
+    "USA_cif": 1254943219.2055335
+  },
+  {
+    "refMonth": "2024-02",
+    "Argentina_cif": 175046877.11849603,
+    "Brazil_cif": 2673932062.8616605,
+    "USA_cif": 1201331129.6837945
+  },
+  {
+    "refMonth": "2024-03",
+    "Argentina_cif": 176090695.93258035,
+    "Brazil_cif": 2694446763.837945,
+    "USA_cif": 1147719040.1620553
+  },
+  {
+    "refMonth": "2024-04",
+    "Argentina_cif": 177134514.7466647,
+    "Brazil_cif": 2714961464.8142295,
+    "USA_cif": 1094106950.6403162
+  },
+  {
+    "refMonth": "2024-05",
+    "Argentina_cif": 178178333.56074905,
+    "Brazil_cif": 2735476165.790514,
+    "USA_cif": 1040494861.118577
+  },
+  {
+    "refMonth": "2024-06",
+    "Argentina_cif": 179222152.37483338,
+    "Brazil_cif": 2755990866.7667985,
+    "USA_cif": 986882771.5968379
+  },
+  {
+    "refMonth": "2024-07",
+    "Argentina_cif": 180265971.18891773,
+    "Brazil_cif": 2776505567.7430835,
+    "USA_cif": 933270682.0750988
+  },
+  {
+    "refMonth": "2024-08",
+    "Argentina_cif": 181309790.00300208,
+    "Brazil_cif": 2797020268.719368,
+    "USA_cif": 879658592.5533597
+  },
+  {
+    "refMonth": "2024-09",
+    "Argentina_cif": 182353608.8170864,
+    "Brazil_cif": 2817534969.6956525,
+    "USA_cif": 826046503.0316205
+  },
+  {
+    "refMonth": "2024-10",
+    "Argentina_cif": 183397427.63117075,
+    "Brazil_cif": 2838049670.671937,
+    "USA_cif": 772434413.5098815
+  },
+  {
+    "refMonth": "2024-11",
+    "Argentina_cif": 184441246.4452551,
+    "Brazil_cif": 2858564371.6482215,
+    "USA_cif": 718822323.9881423
+  },
+  {
+    "refMonth": "2024-12",
+    "Argentina_cif": 185485065.25933942,
+    "Brazil_cif": 2879079072.624506,
+    "USA_cif": 665210234.4664032
+  },
+  {
+    "refMonth": "2025-01",
+    "Argentina_cif": 186528884.07342377,
+    "Brazil_cif": 2899593773.6007905,
+    "USA_cif": 611598144.9446641
+  },
+  {
+    "refMonth": "2025-02",
+    "Argentina_cif": 187572702.8875081,
+    "Brazil_cif": 2920108474.577075,
+    "USA_cif": 557986055.422925
+  },
+  {
+    "refMonth": "2025-03",
+    "Argentina_cif": 188616521.70159245,
+    "Brazil_cif": 2940623175.5533595,
+    "USA_cif": 504373965.90118587
+  },
+  {
+    "refMonth": "2025-04",
+    "Argentina_cif": 189660340.5156768,
+    "Brazil_cif": 2961137876.529644,
+    "USA_cif": 450761876.37944674
+  },
+  {
+    "refMonth": "2025-05",
+    "Argentina_cif": 190704159.32976112,
+    "Brazil_cif": 2981652577.505929,
+    "USA_cif": 397149786.8577076
+  },
+  {
+    "refMonth": "2025-06",
+    "Argentina_cif": 191747978.14384547,
+    "Brazil_cif": 3002167278.4822135,
+    "USA_cif": 343537697.3359685
+  },
+  {
+    "refMonth": "2025-07",
+    "Argentina_cif": 192791796.95792982,
+    "Brazil_cif": 3022681979.458498,
+    "USA_cif": 289925607.81422937
+  },
+  {
+    "refMonth": "2025-08",
+    "Argentina_cif": 193835615.77201414,
+    "Brazil_cif": 3043196680.4347825,
+    "USA_cif": 236313518.29249024
+  },
+  {
+    "refMonth": "2025-09",
+    "Argentina_cif": 194879434.5860985,
+    "Brazil_cif": 3063711381.411067,
+    "USA_cif": 182701428.77075112
+  },
+  {
+    "refMonth": "2025-10",
+    "Argentina_cif": 195923253.40018284,
+    "Brazil_cif": 3084226082.3873515,
+    "USA_cif": 129089339.249012
+  },
+  {
+    "refMonth": "2025-11",
+    "Argentina_cif": 196967072.21426716,
+    "Brazil_cif": 3104740783.363636,
+    "USA_cif": 75477249.72727299
+  },
+  {
+    "refMonth": "2025-12",
+    "Argentina_cif": 198010891.02835152,
+    "Brazil_cif": 3125255484.3399205,
+    "USA_cif": 21865160.205533743
+  },
+  {
+    "refMonth": "2026-01",
+    "Argentina_cif": 199054709.84243587,
+    "Brazil_cif": 3145770185.316205,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-02",
+    "Argentina_cif": 200098528.6565202,
+    "Brazil_cif": 3166284886.2924895,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-03",
+    "Argentina_cif": 201142347.47060454,
+    "Brazil_cif": 3186799587.268774,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-04",
+    "Argentina_cif": 202186166.2846889,
+    "Brazil_cif": 3207314288.245059,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-05",
+    "Argentina_cif": 203229985.0987732,
+    "Brazil_cif": 3227828989.221343,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-06",
+    "Argentina_cif": 204273803.91285756,
+    "Brazil_cif": 3248343690.197628,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-07",
+    "Argentina_cif": 205317622.7269419,
+    "Brazil_cif": 3268858391.1739125,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-08",
+    "Argentina_cif": 206361441.54102623,
+    "Brazil_cif": 3289373092.150197,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-09",
+    "Argentina_cif": 207405260.3551106,
+    "Brazil_cif": 3309887793.1264815,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-10",
+    "Argentina_cif": 208449079.16919494,
+    "Brazil_cif": 3330402494.102766,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-11",
+    "Argentina_cif": 209492897.98327926,
+    "Brazil_cif": 3350917195.0790505,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2026-12",
+    "Argentina_cif": 210536716.7973636,
+    "Brazil_cif": 3371431896.055335,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-01",
+    "Argentina_cif": 211580535.61144793,
+    "Brazil_cif": 3391946597.03162,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-02",
+    "Argentina_cif": 212624354.42553228,
+    "Brazil_cif": 3412461298.007904,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-03",
+    "Argentina_cif": 213668173.23961663,
+    "Brazil_cif": 3432975998.984189,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-04",
+    "Argentina_cif": 214711992.05370098,
+    "Brazil_cif": 3453490699.9604735,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-05",
+    "Argentina_cif": 215755810.8677853,
+    "Brazil_cif": 3474005400.936758,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-06",
+    "Argentina_cif": 216799629.68186966,
+    "Brazil_cif": 3494520101.9130425,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-07",
+    "Argentina_cif": 217843448.49595398,
+    "Brazil_cif": 3515034802.889327,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-08",
+    "Argentina_cif": 218887267.31003833,
+    "Brazil_cif": 3535549503.8656116,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-09",
+    "Argentina_cif": 219931086.12412268,
+    "Brazil_cif": 3556064204.841896,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-10",
+    "Argentina_cif": 220974904.938207,
+    "Brazil_cif": 3576578905.8181806,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-11",
+    "Argentina_cif": 222018723.75229135,
+    "Brazil_cif": 3597093606.794465,
+    "USA_cif": 0.0
+  },
+  {
+    "refMonth": "2027-12",
+    "Argentina_cif": 223062542.5663757,
+    "Brazil_cif": 3617608307.77075,
+    "USA_cif": 0.0
+  }
+]

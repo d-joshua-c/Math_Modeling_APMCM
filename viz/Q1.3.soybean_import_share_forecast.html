@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soybean Import Share Forecast (2024–2027)</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chart { width: 100%; height: 520px; }
+        .wrap { padding: 20px; }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div id="chart" class="chart"></div>
+    </div>
+    <script>
+        var chart = echarts.init(document.getElementById('chart'));
+        var url = '../data/processed/Q1.share_forecast_2024_2027.json';
+        fetch(url).then(function(r){return r.json();}).then(function(data){
+            var byYear = {};
+            data.forEach(function(d){
+                var s = d.refMonth;
+                var y = (typeof s === 'string') ? s.slice(0,4) : new Date(s).getFullYear().toString();
+                if (!byYear[y]) { byYear[y] = { Argentina_cif: 0, Brazil_cif: 0, USA_cif: 0 }; }
+                byYear[y].Argentina_cif += Number(d.Argentina_cif || 0);
+                byYear[y].Brazil_cif += Number(d.Brazil_cif || 0);
+                byYear[y].USA_cif += Number(d.USA_cif || 0);
+            });
+            var years = Object.keys(byYear).sort();
+            var total = years.map(function(y){ var x = byYear[y]; return x.Argentina_cif + x.Brazil_cif + x.USA_cif; });
+            var argentina = years.map(function(y,i){ var x = byYear[y]; return total[i] > 0 ? Number(((x.Argentina_cif/total[i])*100).toFixed(2)) : 0; });
+            var brazil = years.map(function(y,i){ var x = byYear[y]; return total[i] > 0 ? Number(((x.Brazil_cif/total[i])*100).toFixed(2)) : 0; });
+            var usa = years.map(function(y,i){ var x = byYear[y]; return total[i] > 0 ? Number(((x.USA_cif/total[i])*100).toFixed(2)) : 0; });
+
+            var option = {
+                color: ['#5470C6', '#91CC75', '#FAC858'],
+                title: { text: 'Gradient Stacked Area Chart: Import Share Forecast (Annual, 2024–2027)', left: 'center' },
+                legend: { data: ['Argentina','Brazil','USA'], top: 30 },
+                tooltip: { show: false },
+                toolbox: { feature: { saveAsImage: { show: true, name: 'soybean_import_share_forecast_2024_2027' } } },
+                grid: { left: '3%', right: '4%', bottom: '3%', containLabel: true },
+                xAxis: [{ type: 'category', boundaryGap: false, data: years }],
+                yAxis: [{ type: 'value', min: 0, max: 100, axisLabel: { formatter: '{value} %' } }],
+                series: [
+                    {
+                        name: 'Argentina', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 0 }, showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.95,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#5A77C8' },
+                                { offset: 1, color: '#5470C6' }
+                            ])
+                        },
+                        emphasis: { focus: 'series' },
+                        data: argentina
+                    },
+                    {
+                        name: 'Brazil', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 0 }, showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.95,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#86C57B' },
+                                { offset: 1, color: '#91CC75' }
+                            ])
+                        },
+                        emphasis: { focus: 'series' },
+                        data: brazil
+                    },
+                    {
+                        name: 'USA', type: 'line', stack: 'Total', smooth: true,
+                        lineStyle: { width: 0 }, showSymbol: false,
+                        areaStyle: {
+                            opacity: 0.95,
+                            color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                                { offset: 0, color: '#F5BD4D' },
+                                { offset: 1, color: '#FAC858' }
+                            ])
+                        },
+                        emphasis: { focus: 'series' },
+                        data: usa
+                    }
+                ]
+            };
+            chart.setOption(option);
+        }).catch(function(err){console.error(err);});
+    </script>
+</body>
+</html>
